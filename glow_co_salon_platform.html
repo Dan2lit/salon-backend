@@ -19,8 +19,6 @@
             --border: #e2e8f0;
             --success: #10b981;
             --success-bg: #d1fae5;
-            --warning: #f59e0b;
-            --warning-bg: #fef3c7;
             --danger: #ef4444;
             --danger-bg: #fee2e2;
             --shadow-lg: 0 10px 25px -5px rgb(99 102 241 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.01);
@@ -68,7 +66,7 @@
 
         main {
             flex: 1;
-            max-width: 1000px;
+            max-width: 900px;
             width: 100%;
             margin: 2.5rem auto;
             padding: 0 1.25rem;
@@ -78,14 +76,21 @@
             display: none;
         }
 
-        .view-section.active {
-            display: block;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+            .view-section.active {
+                display: block;
+                animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .card {
@@ -111,18 +116,10 @@
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
         }
 
-        label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 0.35rem;
-            display: block;
-            color: var(--text);
-        }
-
-        input, select {
+        input {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1.5px solid var(--border);
@@ -134,10 +131,10 @@
             transition: all 0.2s ease;
         }
 
-        input:focus, select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-        }
+            input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+            }
 
         .btn {
             width: 100%;
@@ -153,9 +150,9 @@
             transition: all 0.2s ease;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
-        }
+            .btn:hover {
+                transform: translateY(-1px);
+            }
 
         .btn-secondary {
             background: var(--bg);
@@ -164,9 +161,9 @@
             box-shadow: none;
         }
 
-        .btn-secondary:hover {
-            background: #e2e8f0;
-        }
+            .btn-secondary:hover {
+                background: #e2e8f0;
+            }
 
         .btn-danger {
             background: var(--danger-bg);
@@ -177,43 +174,10 @@
             font-size: 0.85rem;
         }
 
-        .btn-danger:hover {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-small {
-            width: auto;
-            padding: 0.5rem 0.9rem;
-            font-size: 0.85rem;
-        }
-
-        /* Модальное окно */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal-card {
-            background: white;
-            border-radius: var(--radius-lg);
-            width: 100%;
-            max-width: 500px;
-            padding: 2rem;
-            box-shadow: var(--shadow-lg);
-            animation: fadeIn 0.2s ease;
-        }
+            .btn-danger:hover {
+                background: var(--danger);
+                color: white;
+            }
 
         .table-container {
             overflow-x: auto;
@@ -250,12 +214,9 @@
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 700;
+            background: var(--primary-subtle);
+            color: var(--primary);
         }
-
-        .badge-primary { background: var(--primary-subtle); color: var(--primary); }
-        .badge-success { background: var(--success-bg); color: var(--success); }
-        .badge-warning { background: var(--warning-bg); color: #d97706; }
-        .badge-danger { background: var(--danger-bg); color: var(--danger); }
 
         .alert {
             padding: 0.9rem 1.1rem;
@@ -279,6 +240,20 @@
             padding-top: 1rem;
             border-top: 1px dashed var(--border);
         }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+            .auth-switch a {
+                color: var(--primary);
+                font-weight: 700;
+                cursor: pointer;
+                text-decoration: none;
+            }
     </style>
 </head>
 <body>
@@ -291,21 +266,21 @@
     </header>
 
     <main>
-        <!-- 1. СТРАНИЦА АВТОРИЗАЦИИ -->
+        <!-- 1. СТРАНИЦА АВТОРИЗАЦИИ (ГЛАВНАЯ ПРИ СТАРТЕ) -->
         <div id="loginView" class="view-section active">
             <div class="card" style="max-width: 440px; margin: 0 auto;">
-                <h1 class="card-title">Вход в систему</h1>
-                <p class="card-subtitle">Введите учетные данные для доступа</p>
+                <h1 id="authTitle" class="card-title">Вход в систему</h1>
+                <p id="authSubtitle" class="card-subtitle">Введите учетные данные для доступа</p>
 
                 <div id="loginAlert" class="alert alert-error"></div>
 
                 <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label>Логин</label>
+                        <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
                         <input type="text" id="username" placeholder="user, master1 или admin" required>
                     </div>
                     <div class="form-group">
-                        <label>Пароль</label>
+                        <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
                         <input type="password" id="password" placeholder="••••••••" required>
                     </div>
                     <button type="submit" class="btn">Войти в кабинет</button>
@@ -322,15 +297,12 @@
         <!-- 2. СТРАНИЦА КЛИЕНТА -->
         <div id="clientView" class="view-section">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <div>
                         <h1 class="card-title">Личный кабинет клиента</h1>
-                        <span id="clientInfo" class="badge badge-primary">Клиент</span>
+                        <span id="clientInfo" class="badge">Клиент</span>
                     </div>
-                    <div style="display: flex; gap: 0.75rem;">
-                        <button class="btn btn-small" onclick="openBookingModal()">+ Записаться</button>
-                        <button class="btn btn-danger" onclick="logout()">Выйти</button>
-                    </div>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
                 </div>
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Мои записи</h3>
                 <div class="table-container">
@@ -341,12 +313,11 @@
                                 <th>Дата и Время</th>
                                 <th>Услуга</th>
                                 <th>Мастер</th>
-                                <th>Статус</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
                         <tbody id="clientAppointmentsTable">
-                            <tr><td colspan="6" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
+                            <tr><td colspan="5" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -359,11 +330,11 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <div>
                         <h1 class="card-title">Кабинет мастера</h1>
-                        <span id="masterInfo" class="badge badge-warning">Мастер</span>
+                        <span id="masterInfo" class="badge" style="background: #fef3c7; color: #d97706;">Мастер</span>
                     </div>
-                    <button class="btn btn-danger" onclick="logout()">Выйти</button>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
                 </div>
-                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Расписание и статусы записей</h3>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Расписание и записи клиентов</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -373,11 +344,10 @@
                                 <th>Клиент</th>
                                 <th>Телефон</th>
                                 <th>Услуга</th>
-                                <th>Статус</th>
                             </tr>
                         </thead>
                         <tbody id="masterAppointmentsTable">
-                            <tr><td colspan="6" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
+                            <tr><td colspan="5" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -390,9 +360,9 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <div>
                         <h1 class="card-title">Панель администратора</h1>
-                        <span id="adminInfo" class="badge badge-danger">Администратор</span>
+                        <span id="adminInfo" class="badge" style="background: #fce7f3; color: #db2777;">Администратор</span>
                     </div>
-                    <button class="btn btn-danger" onclick="logout()">Выйти</button>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
                 </div>
                 <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Все записи салона</h3>
                 <div class="table-container">
@@ -402,9 +372,9 @@
                                 <th>ID</th>
                                 <th>Дата и Время</th>
                                 <th>Клиент</th>
+                                <th>Телефон</th>
                                 <th>Услуга</th>
                                 <th>Мастер</th>
-                                <th>Статус</th>
                                 <th>Действия</th>
                             </tr>
                         </thead>
@@ -417,342 +387,192 @@
         </div>
     </main>
 
-    <!-- МОДАЛЬНОЕ ОКНО ИНТЕРАКТИВНОЙ ЗАПИСИ -->
-    <div id="bookingModal" class="modal-overlay">
-        <div class="modal-card">
-            <h2 class="card-title" style="margin-bottom: 0.5rem;">Онлайн-запись</h2>
-            <p class="card-subtitle">Выберите услугу, мастера и удобное время</p>
-            
-            <div id="bookingAlert" class="alert alert-error"></div>
-
-            <form id="bookingForm" onsubmit="handleCreateBooking(event)">
-                <div class="form-group">
-                    <label>Категория услуги / Услуга</label>
-                    <select id="serviceSelect" required>
-                        <option value="">-- Выберите услугу --</option>
-                        <option value="Стрижка и укладка">💇‍♀️ Стрижка и укладка ($50)</option>
-                        <option value="Окрашивание волос">🎨 Окрашивание волос ($120)</option>
-                        <option value="Маникюр с покрытием">💅 Маникюр с покрытием ($35)</option>
-                        <option value="Педикюр премиум">🦶 Педикюр премиум ($45)</option>
-                        <option value="Уход за лицом">✨ Уход за лицом ($70)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Мастер</label>
-                    <select id="masterSelect" required>
-                        <option value="">-- Выберите мастера --</option>
-                        <option value="Елена Ростова">Елена Ростова (Топ-стилист)</option>
-                        <option value="Анна Смирнова">Анна Смирнова (Мастер маникюра)</option>
-                        <option value="Марина Кравченко">Марина Кравченко (Косметолог)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Дата визита</label>
-                    <input type="date" id="bookingDate" required>
-                </div>
-
-                <div class="form-group">
-                    <label>Свободный временной слот</label>
-                    <select id="bookingTime" required>
-                        <option value="">-- Выберите время --</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="11:30">11:30 AM</option>
-                        <option value="13:00">01:00 PM</option>
-                        <option value="15:00">03:00 PM</option>
-                        <option value="17:00">05:00 PM</option>
-                    </select>
-                </div>
-
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <button type="button" class="btn btn-secondary" onclick="closeBookingModal()">Отмена</button>
-                    <button type="submit" class="btn">Подтвердить запись</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <script>
-        let jwtToken = localStorage.getItem('token');
-        let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+                let jwtToken = localStorage.getItem('token');
+                let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
 
-        document.addEventListener('DOMContentLoaded', () => {
-            checkInitialAuth();
-            // Установка минимальной даты в календаре бронирования на сегодня
-            const today = new Date().toISOString().split('T')[0];
-            const dateInput = document.getElementById('bookingDate');
-            if(dateInput) dateInput.min = today;
-        });
-
-        function checkInitialAuth() {
-            if (jwtToken && currentUser) {
-                routeToRoleView(currentUser.role);
-            } else {
-                showView('loginView');
-            }
-        }
-
-        function showView(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-        }
-
-        async function handleLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const alert = document.getElementById('loginAlert');
-
-            try {
-                const res = await fetch('/api/v1/auth/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                document.addEventListener('DOMContentLoaded', () => {
+                    checkInitialAuth();
                 });
 
-                const data = await res.json();
-
-                if (res.ok) {
-                    jwtToken = data.token;
-                    currentUser = data.user;
-                    localStorage.setItem('token', jwtToken);
-                    localStorage.setItem('user', JSON.stringify(currentUser));
-                    routeToRoleView(currentUser.role);
-                } else {
-                    alert.textContent = data.error || 'Неверный логин или пароль';
-                    alert.style.display = 'block';
+                function checkInitialAuth() {
+                    if (jwtToken && currentUser) {
+                        routeToRoleView(currentUser.role);
+                    } else {
+                        showView('loginView');
+                    }
                 }
-            } catch (err) {
-                alert.textContent = 'Ошибка связи с сервером';
-                alert.style.display = 'block';
-            }
-        }
 
-        function quickLogin(role) {
-            const credentials = {
-                user: { username: 'user', password: 'user123' },
-                master: { username: 'master1', password: 'master123' },
-                admin: { username: 'admin', password: 'admin123' }
-            };
-            document.getElementById('username').value = credentials[role].username;
-            document.getElementById('password').value = credentials[role].password;
-            handleLogin({ preventDefault: () => {} });
-        }
-
-        function routeToRoleView(role) {
-            if (role === 'admin') {
-                showView('adminView');
-                document.getElementById('adminInfo').textContent = `Админ: ${currentUser.username}`;
-                loadAdminAppointments();
-            } else if (role === 'master') {
-                showView('masterView');
-                document.getElementById('masterInfo').textContent = `Мастер: ${currentUser.name || currentUser.username}`;
-                loadMasterAppointments();
-            } else {
-                showView('clientView');
-                document.getElementById('clientInfo').textContent = `Клиент: ${currentUser.name || currentUser.username}`;
-                loadClientAppointments();
-            }
-        }
-
-        // Управление модальным окном бронирования
-        function openBookingModal() {
-            document.getElementById('bookingModal').classList.add('active');
-            document.getElementById('bookingAlert').style.display = 'none';
-        }
-
-        function closeBookingModal() {
-            document.getElementById('bookingModal').classList.remove('active');
-            document.getElementById('bookingForm').reset();
-        }
-
-        // Отправка новой записи на сервер
-        async function handleCreateBooking(event) {
-            event.preventDefault();
-            const service_name = document.getElementById('serviceSelect').value;
-            const master_name = document.getElementById('masterSelect').value;
-            const booking_date = document.getElementById('bookingDate').value;
-            const booking_time = document.getElementById('bookingTime').value;
-            const alertBox = document.getElementById('bookingAlert');
-
-            try {
-                const res = await fetch('/api/v1/crm/appointments', {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}` 
-                    },
-                    body: JSON.stringify({ service_name, master_name, booking_date, booking_time })
-                });
-
-                if (res.ok) {
-                    closeBookingModal();
-                    loadClientAppointments();
-                } else {
-                    const data = await res.json();
-                    alertBox.textContent = data.error || 'Не удалось создать запись';
-                    alertBox.style.display = 'block';
+                function showView(viewId) {
+                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                    document.getElementById(viewId).classList.add('active');
                 }
-            } catch (err) {
-                alertBox.textContent = 'Ошибка соединения с сервером';
-                alertBox.style.display = 'block';
-            }
-        }
 
-        // Рендер статусов
-        function getStatusBadge(status) {
-            switch(status) {
-                case 'confirmed': return '<span class="badge badge-primary">Подтверждено</span>';
-                case 'arrived': return '<span class="badge badge-warning">Клиент на месте</span>';
-                case 'completed': return '<span class="badge badge-success">Завершено</span>';
-                case 'cancelled': return '<span class="badge badge-danger">Отменено</span>';
-                default: return '<span class="badge badge-primary">Новая</span>';
-            }
-        }
+                async function handleLogin(event) {
+                    event.preventDefault();
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+                    const alert = document.getElementById('loginAlert');
 
-        // Загрузка записей клиента
-        async function loadClientAppointments() {
-            const tbody = document.getElementById('clientAppointmentsTable');
-            try {
-                const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
-                if (res.status === 401) { logout(); return; }
-                const data = await res.json();
+                    try {
+                        const res = await fetch('/api/v1/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
 
-                tbody.innerHTML = '';
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">У вас пока нет записей</td></tr>';
-                    return;
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            jwtToken = data.token;
+                            currentUser = data.user;
+                            localStorage.setItem('token', jwtToken);
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            routeToRoleView(currentUser.role);
+                        } else {
+                            alert.textContent = data.error || 'Неверный логин или пароль';
+                            alert.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert.textContent = 'Ошибка связи с сервером';
+                        alert.style.display = 'block';
+                    }
                 }
-                data.forEach(app => {
-                    const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>#${app.id}</strong></td>
-                            <td>${dateStr} в ${app.booking_time}</td>
-                            <td>${app.service_name || '-'}</td>
-                            <td>${app.master_name || '-'}</td>
-                            <td>${getStatusBadge(app.status)}</td>
-                            <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Отменить</button></td>
-                        </tr>`;
-                });
-            } catch (err) { console.error(err); }
-        }
 
-        // Загрузка расписания мастера с возможностью смены статуса
-        async function loadMasterAppointments() {
-            const tbody = document.getElementById('masterAppointmentsTable');
-            try {
-                const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
-                if (res.status === 401) { logout(); return; }
-                const data = await res.json();
+                function quickLogin(role) {
+                    const credentials = {
+                        user: { username: 'user', password: 'user123' },
+                        master: { username: 'master1', password: 'master123' },
+                        admin: { username: 'admin', password: 'admin123' }
+                    };
+                    document.getElementById('username').value = credentials[role].username;
+                    document.getElementById('password').value = credentials[role].password;
 
-                tbody.innerHTML = '';
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей на вас нет</td></tr>';
-                    return;
+                    // Fixed: Directly invoke handleLogin instead of dispatching a synthetic submit event
+                    handleLogin({ preventDefault: () => {} });
                 }
-                data.forEach(app => {
-                    const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>#${app.id}</strong></td>
-                            <td>${dateStr} в ${app.booking_time}</td>
-                            <td><strong>${app.client_name}</strong></td>
-                            <td>${app.client_phone || 'Не указан'}</td>
-                            <td>${app.service_name || '-'}</td>
-                            <td>
-                                <select onchange="updateStatus(${app.id}, this.value)" style="padding: 0.3rem 0.5rem; font-size: 0.8rem;">
-                                    <option value="confirmed" ${app.status==='confirmed'?'selected':''}>Подтверждено</option>
-                                    <option value="arrived" ${app.status==='arrived'?'selected':''}>Клиент на месте</option>
-                                    <option value="completed" ${app.status==='completed'?'selected':''}>Завершено</option>
-                                    <option value="cancelled" ${app.status==='cancelled'?'selected':''}>Отменено</option>
-                                </select>
-                            </td>
-                        </tr>`;
-                });
-            } catch (err) { console.error(err); }
-        }
 
-        // Загрузка панели администратора
-        async function loadAdminAppointments() {
-            const tbody = document.getElementById('adminAppointmentsTable');
-            try {
-                const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
-                if (res.status === 401) { logout(); return; }
-                const data = await res.json();
-
-                tbody.innerHTML = '';
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей нет</td></tr>';
-                    return;
+                function routeToRoleView(role) {
+                    if (role === 'admin') {
+                        showView('adminView');
+                        document.getElementById('adminInfo').textContent = `Админ: ${currentUser.username}`;
+                        loadAdminAppointments();
+                    } else if (role === 'master') {
+                        showView('masterView');
+                        document.getElementById('masterInfo').textContent = `Мастер: ${currentUser.name || currentUser.username}`;
+                        loadMasterAppointments();
+                    } else {
+                        showView('clientView');
+                        document.getElementById('clientInfo').textContent = `Клиент: ${currentUser.name || currentUser.username}`;
+                        loadClientAppointments();
+                    }
                 }
-                data.forEach(app => {
-                    const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-                    tbody.innerHTML += `
-                        <tr>
-                            <td><strong>#${app.id}</strong></td>
-                            <td>${dateStr} в ${app.booking_time}</td>
-                            <td><strong>${app.client_name}</strong></td>
-                            <td>${app.service_name || '-'}</td>
-                            <td>${app.master_name || '-'}</td>
-                            <td>
-                                <select onchange="updateStatus(${app.id}, this.value)" style="padding: 0.3rem 0.5rem; font-size: 0.8rem;">
-                                    <option value="confirmed" ${app.status==='confirmed'?'selected':''}>Подтверждено</option>
-                                    <option value="arrived" ${app.status==='arrived'?'selected':''}>Клиент на месте</option>
-                                    <option value="completed" ${app.status==='completed'?'selected':''}>Завершено</option>
-                                    <option value="cancelled" ${app.status==='cancelled'?'selected':''}>Отменено</option>
-                                </select>
-                            </td>
-                            <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Удалить</button></td>
-                        </tr>`;
-                });
-            } catch (err) { console.error(err); }
-        }
 
-        // Изменение статуса записи
-        async function updateStatus(id, newStatus) {
-            try {
-                const res = await fetch(`/api/v1/crm/appointments/${id}/status`, {
-                    method: 'PATCH',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${jwtToken}` 
-                    },
-                    body: JSON.stringify({ status: newStatus })
-                });
-                if (!res.ok) {
-                    alert('Не удалось обновить статус');
-                    routeToRoleView(currentUser.role);
+                async function loadClientAppointments() {
+                    const tbody = document.getElementById('clientAppointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
+
+                        tbody.innerHTML = '';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">У вас пока нет записей</td></tr>';
+                            return;
+                        }
+                        data.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                    <td>${app.master_name || '-'}</td>
+                                    <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Отменить</button></td>
+                                </tr>`;
+                        });
+                    } catch (err) { console.error(err); }
                 }
-            } catch (err) { console.error(err); }
-        }
 
-        async function cancelAppointment(id) {
-            if (!confirm('Вы уверены, что хотите отменить запись?')) return;
-            try {
-                const res = await fetch(`/api/v1/crm/appointments/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
-                if (res.ok) {
-                    routeToRoleView(currentUser.role);
-                } else {
-                    alert('Не удалось удалить запись');
+                async function loadMasterAppointments() {
+                    const tbody = document.getElementById('masterAppointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
+
+                        tbody.innerHTML = '';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей на вас нет</td></tr>';
+                            return;
+                        }
+                        data.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
+                                    <td><strong>${app.client_name}</strong></td>
+                                    <td>${app.client_phone}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                </tr>`;
+                        });
+                    } catch (err) { console.error(err); }
                 }
-            } catch (err) { console.error(err); }
-        }
 
-        function logout() {
-            jwtToken = null;
-            currentUser = null;
-            localStorage.removeItem('token');
-            localStorage.removeItem('user');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('loginAlert').style.display = 'none';
-            showView('loginView');
-        }
+                async function loadAdminAppointments() {
+                    const tbody = document.getElementById('adminAppointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
+
+                        tbody.innerHTML = '';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей нет</td></tr>';
+                            return;
+                        }
+                        data.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
+                                    <td><strong>${app.client_name}</strong></td>
+                                    <td>${app.client_phone}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                    <td>${app.master_name || '-'}</td>
+                                    <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Удалить</button></td>
+                                </tr>`;
+                        });
+                    } catch (err) { console.error(err); }
+                }
+
+                async function cancelAppointment(id) {
+                    if (!confirm('Вы уверены?')) return;
+                    try {
+                        const res = await fetch(`/api/v1/crm/appointments/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${jwtToken}` }
+                        });
+                        if (res.ok) {
+                            routeToRoleView(currentUser.role);
+                        } else {
+                            alert('Не удалось удалить запись');
+                        }
+                    } catch (err) { console.error(err); }
+                }
+
+                function logout() {
+                    jwtToken = null;
+                    currentUser = null;
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('loginAlert').style.display = 'none';
+                    showView('loginView');
+                }
     </script>
 </body>
 </html>
