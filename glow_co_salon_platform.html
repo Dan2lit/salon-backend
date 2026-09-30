@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow & Co. — CRM Calendar</title>
+    <title>Glow & Co. — Salon Platform</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,6 +13,7 @@
             --card-bg: #ffffff;
             --primary: #8b5cf6;
             --primary-light: #f3e8ff;
+            --primary-hover: #7c3aed;
             --text-main: #1e1e24;
             --text-muted: #6b7280;
             --border-color: #e5e7eb;
@@ -90,7 +91,7 @@
         /* MAIN CONTAINER */
         main {
             flex: 1;
-            max-width: 1100px;
+            max-width: 1000px;
             width: 100%;
             margin: 2rem auto;
             padding: 0 1.5rem;
@@ -108,8 +109,125 @@
             background: var(--card-bg);
             border-radius: var(--radius-lg);
             border: 1px solid var(--border-color);
-            padding: 2rem;
+            padding: 2.25rem;
             box-shadow: var(--shadow-card);
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 1.75rem;
+        }
+
+        /* FORM STYLES */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .step-label {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: var(--text-main);
+        }
+
+        .step-number {
+            background: var(--primary-light);
+            color: var(--primary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background-color: #ffffff;
+            outline: none;
+            transition: all 0.15s ease;
+        }
+
+            select:focus, input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+            }
+
+        /* TIME SLOT PICKER GRID */
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .slot-btn {
+            padding: 0.8rem 0.5rem;
+            border: 1px solid var(--border-color);
+            background: #fafafa;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            transition: all 0.15s ease;
+        }
+
+            .slot-btn:hover {
+                border-color: var(--primary);
+                color: var(--primary);
+                background: var(--primary-light);
+            }
+
+            .slot-btn.selected {
+                background: var(--primary);
+                color: #ffffff;
+                border-color: var(--primary-hover);
+                box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+            }
+
+        /* SUBMIT BUTTON */
+        .btn-submit {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: var(--primary);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+            .btn-submit:hover {
+                background: var(--primary-hover);
+                box-shadow: 0 6px 16px rgba(139, 92, 246, 0.25);
+            }
+
+        .client-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
         /* CALENDAR CONTROL HEADER */
@@ -147,12 +265,7 @@
             font-weight: 600;
             font-size: 0.875rem;
             color: var(--text-main);
-            transition: background 0.15s ease;
         }
-
-            .cal-btn:hover {
-                background: #e5e7eb;
-            }
 
         .user-pill {
             background: var(--primary-light);
@@ -242,14 +355,7 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            transition: transform 0.15s ease;
-            cursor: pointer;
         }
-
-            .booking-card:hover {
-                transform: scale(1.02);
-                z-index: 10;
-            }
 
         .booking-time {
             font-weight: 700;
@@ -283,10 +389,11 @@
             cursor: pointer;
         }
 
-            .btn-logout:hover {
-                background: var(--accent-pink);
-                color: #fff;
+        @media (max-width: 640px) {
+            .client-grid {
+                grid-template-columns: 1fr;
             }
+        }
     </style>
 </head>
 <body>
@@ -296,16 +403,84 @@
             <span>✦</span> Glow & Co.
         </div>
         <nav>
-            <button class="nav-btn" onclick="switchTab('bookingTab', event)">Виджет Записи</button>
-            <button class="nav-btn active" onclick="switchTab('crmTab', event)">Панель CRM</button>
+            <button id="navBookingBtn" class="nav-btn active" onclick="switchTab('bookingTab')">Виджет Записи</button>
+            <button id="navCrmBtn" class="nav-btn" onclick="switchTab('crmTab')">Панель CRM</button>
         </nav>
     </header>
 
     <main>
-        <!-- CRM PANE WITH CALENDAR TIMETABLE VIEW -->
-        <div id="crmTab" class="tab-content active">
+        <!-- TAB 1: ВИДЖЕТ ЗАПИСИ (PICKING UP THE TIME SLOTS) -->
+        <div id="bookingTab" class="tab-content active">
             <div class="card">
+                <h1 class="card-title">Онлайн-запись</h1>
+                <p class="card-subtitle">Выберите услугу, мастера и удобное время для визита</p>
 
+                <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+                    <!-- 1. Услуга -->
+                    <div class="form-group">
+                        <label class="step-label">
+                            <span class="step-number">1</span> Услуга
+                        </label>
+                        <select id="serviceSelect" required>
+                            <option value="1">Стрижка & Укладка — 2 500 ₽ (60 мин)</option>
+                            <option value="2">Окрашивание волос — 5 000 ₽ (120 мин)</option>
+                            <option value="3">Маникюр с покрытием — 1 800 ₽ (90 мин)</option>
+                        </select>
+                    </div>
+
+                    <!-- 2. Мастер -->
+                    <div class="form-group">
+                        <label class="step-label">
+                            <span class="step-number">2</span> Мастер
+                        </label>
+                        <select id="masterSelect" required>
+                            <option value="1">Анна Смирнова (Топ-стилист) — ⭐ 4.9</option>
+                            <option value="2">Елена Ковалева (Колорист) — ⭐ 4.8</option>
+                            <option value="3">Мария Орлова (Мастер маникюра) — ⭐ 5.0</option>
+                        </select>
+                    </div>
+
+                    <!-- 3. Дата -->
+                    <div class="form-group">
+                        <label class="step-label">
+                            <span class="step-number">3</span> Дата визита
+                        </label>
+                        <input type="date" id="dateInput" value="2026-09-30" required>
+                    </div>
+
+                    <!-- 4. Время (TIME SLOTS PICKER) -->
+                    <div class="form-group">
+                        <label class="step-label">
+                            <span class="step-number">4</span> Выберите время
+                        </label>
+                        <div id="slotsContainer" class="slots-grid">
+                            <div class="slot-btn" onclick="selectSlot(this)">10:00</div>
+                            <div class="slot-btn selected" onclick="selectSlot(this)">11:30</div>
+                            <div class="slot-btn" onclick="selectSlot(this)">14:00</div>
+                            <div class="slot-btn" onclick="selectSlot(this)">15:30</div>
+                            <div class="slot-btn" onclick="selectSlot(this)">17:00</div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Данные клиента -->
+                    <div class="form-group">
+                        <label class="step-label">
+                            <span class="step-number">5</span> Контактные данные
+                        </label>
+                        <div class="client-grid">
+                            <input type="text" id="clientName" placeholder="Ваше имя" required>
+                            <input type="tel" id="clientPhone" placeholder="+7 (999) 000-00-00" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Записаться на приём</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB 2: ПАНЕЛЬ CRM (CALENDAR SCHEDULE TIMETABLE) -->
+        <div id="crmTab" class="tab-content">
+            <div class="card">
                 <!-- CALENDAR CONTROLS -->
                 <div class="calendar-controls">
                     <div class="cal-title-group">
@@ -326,8 +501,7 @@
                 <!-- WEEKLY CALENDAR TIMETABLE -->
                 <div class="calendar-grid-container">
                     <div class="calendar-grid">
-
-                        <!-- HEADER ROW (Time + Days) -->
+                        <!-- HEADER ROW -->
                         <div class="cal-header-cell">Время</div>
                         <div class="cal-header-cell">Пн, 28 Сен</div>
                         <div class="cal-header-cell">Вт, 29 Сен</div>
@@ -337,10 +511,8 @@
                         <div class="cal-header-cell">Сб, 03 Окт</div>
                         <div class="cal-header-cell">Вс, 04 Окт</div>
 
-                        <!-- TIME ROW: 09:00 -->
-                        <div class="time-col">
-                            <div class="time-slot-label">09:00</div>
-                        </div>
+                        <!-- 09:00 -->
+                        <div class="time-col"><div class="time-slot-label">09:00</div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col">
@@ -357,10 +529,8 @@
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
 
-                        <!-- TIME ROW: 11:00 -->
-                        <div class="time-col">
-                            <div class="time-slot-label">11:00</div>
-                        </div>
+                        <!-- 11:00 -->
+                        <div class="time-col"><div class="time-slot-label">11:00</div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col">
                             <div class="day-slot-cell">
@@ -377,10 +547,8 @@
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
 
-                        <!-- TIME ROW: 13:00 -->
-                        <div class="time-col">
-                            <div class="time-slot-label">13:00</div>
-                        </div>
+                        <!-- 13:00 -->
+                        <div class="time-col"><div class="time-slot-label">13:00</div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
@@ -397,10 +565,8 @@
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
 
-                        <!-- TIME ROW: 15:00 -->
-                        <div class="time-col">
-                            <div class="time-slot-label">15:00</div>
-                        </div>
+                        <!-- 15:00 -->
+                        <div class="time-col"><div class="time-slot-label">15:00</div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col">
@@ -425,10 +591,8 @@
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
 
-                        <!-- TIME ROW: 17:00 -->
-                        <div class="time-col">
-                            <div class="time-slot-label">17:00</div>
-                        </div>
+                        <!-- 17:00 -->
+                        <div class="time-col"><div class="time-slot-label">17:00</div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
                         <div class="day-col"><div class="day-slot-cell"></div></div>
@@ -439,17 +603,32 @@
 
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
 
     <script>
-            function switchTab(tabId, event) {
-              document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-              if (event) {
-                event.target.classList.add('active');
+            function switchTab(tabId) {
+              document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+              document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+
+              document.getElementById(tabId).classList.add('active');
+
+              if (tabId === 'bookingTab') {
+                document.getElementById('navBookingBtn').classList.add('active');
+              } else {
+                document.getElementById('navCrmBtn').classList.add('active');
               }
+            }
+
+            function selectSlot(element) {
+              document.querySelectorAll('.slot-btn').forEach(btn => btn.classList.remove('selected'));
+              element.classList.add('selected');
+            }
+
+            function handleBookingSubmit(event) {
+              event.preventDefault();
+              alert('Запись успешно сформирована!');
             }
     </script>
 </body>
