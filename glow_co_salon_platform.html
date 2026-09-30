@@ -11,7 +11,6 @@
         :root {
             --primary: #6366f1;
             --primary-hover: #4f46e5;
-            --primary-light: #eeef2e;
             --primary-subtle: #e0e7ff;
             --bg: #f8fafc;
             --card-bg: #ffffff;
@@ -22,10 +21,7 @@
             --success-bg: #d1fae5;
             --danger: #ef4444;
             --danger-bg: #fee2e2;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 25px -5px rgb(99 102 241 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.01);
-            --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
         }
@@ -47,19 +43,14 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER & NAVIGATION */
         header {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             padding: 1.1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
         }
 
         .logo {
@@ -71,55 +62,23 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            letter-spacing: -0.02em;
         }
 
-        nav {
-            display: flex;
-            background: #f1f5f9;
-            padding: 4px;
-            border-radius: 9999px;
-            gap: 2px;
-        }
-
-        .nav-btn {
-            padding: 0.55rem 1.25rem;
-            border-radius: 9999px;
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.875rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-            .nav-btn:hover {
-                color: var(--text);
-            }
-
-            .nav-btn.active {
-                background: var(--card-bg);
-                color: var(--primary);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-            }
-
-        /* MAIN CONTAINER */
         main {
             flex: 1;
-            max-width: 860px;
+            max-width: 900px;
             width: 100%;
             margin: 2.5rem auto;
             padding: 0 1.25rem;
         }
 
-        .tab-content {
+        .view-section {
             display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-            .tab-content.active {
+            .view-section.active {
                 display: block;
+                animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
         @keyframes fadeIn {
@@ -134,7 +93,6 @@
             }
         }
 
-        /* CARDS */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
@@ -147,7 +105,6 @@
         .card-title {
             font-size: 1.4rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
             color: var(--text);
             margin-bottom: 0.35rem;
         }
@@ -158,35 +115,11 @@
             margin-bottom: 1.75rem;
         }
 
-        /* FORM STYLES */
         .form-group {
             margin-bottom: 1.5rem;
         }
 
-        .step-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            margin-bottom: 0.6rem;
-            color: var(--text);
-        }
-
-        .step-number {
-            background: var(--primary-subtle);
-            color: var(--primary);
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 800;
-        }
-
-        select, input {
+        input {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1.5px solid var(--border);
@@ -198,63 +131,11 @@
             transition: all 0.2s ease;
         }
 
-            select:focus, input:focus {
+            input:focus {
                 border-color: var(--primary);
                 box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
             }
 
-            select:disabled, input:disabled {
-                background-color: #f8fafc;
-                color: #94a3b8;
-                cursor: not-allowed;
-            }
-
-        /* SLOTS GRID */
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 0.6rem;
-            margin-top: 0.5rem;
-        }
-
-        .slot-btn {
-            padding: 0.7rem 0.5rem;
-            border: 1.5px solid var(--border);
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-            .slot-btn:hover {
-                border-color: var(--primary);
-                background: rgba(99, 102, 241, 0.02);
-                transform: translateY(-1px);
-            }
-
-            .slot-btn.selected {
-                background: var(--primary);
-                color: white;
-                border-color: var(--primary);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-            }
-
-        .slots-empty-state {
-            grid-column: 1 / -1;
-            padding: 1.25rem;
-            background: var(--bg);
-            border-radius: var(--radius-md);
-            border: 1px dashed var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        /* BUTTONS */
         .btn {
             width: 100%;
             padding: 0.9rem 1.5rem;
@@ -266,20 +147,11 @@
             font-weight: 700;
             cursor: pointer;
             box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
+            transition: all 0.2s ease;
         }
 
             .btn:hover {
                 transform: translateY(-1px);
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            }
-
-            .btn:active {
-                transform: translateY(0);
             }
 
         .btn-secondary {
@@ -291,25 +163,22 @@
 
             .btn-secondary:hover {
                 background: #e2e8f0;
-                box-shadow: none;
             }
 
         .btn-danger {
             background: var(--danger-bg);
             color: var(--danger);
             box-shadow: none;
-            padding: 0.45rem 0.85rem;
-            font-size: 0.8rem;
-            border-radius: var(--radius-sm);
+            width: auto;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
         }
 
             .btn-danger:hover {
                 background: var(--danger);
                 color: white;
-                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
             }
 
-        /* TABLES & BADGES */
         .table-container {
             overflow-x: auto;
             border-radius: var(--radius-md);
@@ -336,17 +205,11 @@
             color: var(--text-muted);
             text-transform: uppercase;
             font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
         }
 
         .badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.35rem;
             padding: 0.25rem 0.65rem;
             border-radius: 9999px;
             font-size: 0.75rem;
@@ -355,22 +218,6 @@
             color: var(--primary);
         }
 
-        .badge-user {
-            background: #e0f2fe;
-            color: #0284c7;
-        }
-
-        .badge-master {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .badge-admin {
-            background: #fce7f3;
-            color: #db2777;
-        }
-
-        /* ALERTS */
         .alert {
             padding: 0.9rem 1.1rem;
             border-radius: var(--radius-md);
@@ -378,13 +225,6 @@
             font-size: 0.875rem;
             font-weight: 600;
             display: none;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .alert-success {
-            background: var(--success-bg);
-            color: #065f46;
-            border: 1px solid #a7f3d0;
         }
 
         .alert-error {
@@ -393,11 +233,12 @@
             border: 1px solid #fecaca;
         }
 
-        /* CLIENT INPUTS CONTAINER */
-        .client-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
+        .quick-roles {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
         }
 
         .auth-switch {
@@ -410,196 +251,120 @@
             .auth-switch a {
                 color: var(--primary);
                 font-weight: 700;
-                text-decoration: none;
                 cursor: pointer;
+                text-decoration: none;
             }
-
-                .auth-switch a:hover {
-                    text-decoration: underline;
-                }
-
-        .quick-roles {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px dashed var(--border);
-        }
-
-            .quick-roles button {
-                flex: 1;
-                padding: 0.4rem;
-                font-size: 0.75rem;
-            }
-
-        @media (max-width: 640px) {
-            .client-grid {
-                grid-template-columns: 1fr;
-            }
-
-            header {
-                padding: 1rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-            }
-        }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">
-            <span>✨</span> Glow & Co.
+            <span>✨</span> Glow & Co. CRM
         </div>
-        <nav>
-            <button class="nav-btn active" onclick="switchTab('bookingTab', event)">Виджет Записи</button>
-            <button class="nav-btn" onclick="switchTab('crmTab', event)">Кабинет / CRM</button>
-        </nav>
+        <div id="headerAction"></div>
     </header>
 
     <main>
-        <!-- ВИДЖЕТ ЗАПИСИ -->
-        <div id="bookingTab" class="tab-content active">
-            <div class="card">
-                <h1 class="card-title">Онлайн-запись</h1>
-                <p class="card-subtitle">Выберите подходящую услугу, мастера и время для посещения</p>
-
-                <div id="bookingAlert" class="alert"></div>
-
-                <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
-                    <!-- 1. Выбор услуги -->
-                    <div class="form-group">
-                        <label for="serviceSelect" class="step-label">
-                            <span class="step-number">1</span> Выберите услугу
-                        </label>
-                        <select id="serviceSelect" onchange="handleServiceChange()" required>
-                            <option value="">-- Загрузка услуг... --</option>
-                        </select>
-                    </div>
-
-                    <!-- 2. Выбор мастера -->
-                    <div class="form-group">
-                        <label for="masterSelect" class="step-label">
-                            <span class="step-number">2</span> Выберите мастера
-                        </label>
-                        <select id="masterSelect" onchange="handleMasterOrDateChange()" disabled required>
-                            <option value="">-- Сначала выберите услугу --</option>
-                        </select>
-                    </div>
-
-                    <!-- 3. Выбор даты -->
-                    <div class="form-group">
-                        <label for="dateInput" class="step-label">
-                            <span class="step-number">3</span> Выберите дату
-                        </label>
-                        <input type="date" id="dateInput" onchange="handleMasterOrDateChange()" disabled required>
-                    </div>
-
-                    <!-- 4. Выбор времени -->
-                    <div class="form-group">
-                        <label class="step-label">
-                            <span class="step-number">4</span> Выберите время
-                        </label>
-                        <div id="slotsContainer" class="slots-grid">
-                            <div class="slots-empty-state">
-                                Выберите мастера и дату для отображения доступных слотов
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 5. Данные клиента -->
-                    <div class="form-group">
-                        <label class="step-label">
-                            <span class="step-number">5</span> Ваши данные
-                        </label>
-                        <div class="client-grid">
-                            <div>
-                                <input type="text" id="clientName" placeholder="Ваше имя" required>
-                            </div>
-                            <div>
-                                <input type="tel" id="clientPhone" placeholder="+7 (999) 000-00-00" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn" style="margin-top: 1rem;">
-                        Подтвердить запись
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- CRM / ЛИЧНЫЙ КАБИНЕТ -->
-        <div id="crmTab" class="tab-content">
-            <!-- ВХОД / РЕГИСТРАЦИЯ -->
-            <div id="loginCard" class="card" style="max-width: 440px; margin: 2rem auto;">
+        <!-- 1. СТРАНИЦА АВТОРИЗАЦИИ (ГЛАВНАЯ ПРИ СТАРТЕ) -->
+        <div id="loginView" class="view-section active">
+            <div class="card" style="max-width: 440px; margin: 0 auto;">
                 <h1 id="authTitle" class="card-title">Вход в систему</h1>
-                <p id="authSubtitle" class="card-subtitle">Войдите как клиент, мастер или администратор</p>
+                <p id="authSubtitle" class="card-subtitle">Введите учетные данные для доступа</p>
 
-                <div id="loginAlert" class="alert"></div>
+                <div id="loginAlert" class="alert alert-error"></div>
 
-                <!-- ФОРМА ВХОДА -->
-                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+                <form id="loginForm" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label for="username" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин или Email</label>
-                        <input type="text" id="username" placeholder="user, master или admin" required>
+                        <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
+                        <input type="text" id="username" placeholder="user, master1 или admin" required>
                     </div>
                     <div class="form-group">
-                        <label for="password" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
+                        <label style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
                         <input type="password" id="password" placeholder="••••••••" required>
                     </div>
                     <button type="submit" class="btn">Войти в кабинет</button>
-
-                    <div class="auth-switch">
-                        Нет аккаунта? <a onclick="toggleAuthMode('register')">Зарегистрироваться</a>
-                    </div>
                 </form>
 
-                <!-- ФОРМА РЕГИСТРАЦИИ (КЛИЕНТ) -->
-                <form id="registerForm" onsubmit="handleRegisterSubmit(event)" style="display: none;">
-                    <div class="form-group">
-                        <label for="regName" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Ваше имя</label>
-                        <input type="text" id="regName" placeholder="Анна Иванова" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regUsername" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
-                        <input type="text" id="regUsername" placeholder="anna_client" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regPhone" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Телефон</label>
-                        <input type="tel" id="regPhone" placeholder="+7 (999) 000-00-00" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="regPassword" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
-                        <input type="password" id="regPassword" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn">Создать аккаунт</button>
-
-                    <div class="auth-switch">
-                        Уже есть аккаунт? <a onclick="toggleAuthMode('login')">Войти</a>
-                    </div>
-                </form>
-
-                <!-- ДЕМО БЫСТРЫЙ ВХОД ДЛЯ ТЕСТИРОВАНИЯ -->
                 <div class="quick-roles">
                     <button type="button" class="btn btn-secondary" onclick="quickLogin('user')">👤 Клиент</button>
                     <button type="button" class="btn btn-secondary" onclick="quickLogin('master')">✂ Мастер</button>
                     <button type="button" class="btn btn-secondary" onclick="quickLogin('admin')">👑 Админ</button>
                 </div>
             </div>
+        </div>
 
-            <!-- ЭКРАН ЛИЧНОГО КАБИНЕТА / CRM -->
-            <div id="dashboardCard" class="card" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <!-- 2. СТРАНИЦА КЛИЕНТА -->
+        <div id="clientView" class="view-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
                     <div>
-                        <h1 id="dashboardTitle" class="card-title">Журнал записей</h1>
-                        <span id="userInfo" class="badge">Загрузка...</span>
+                        <h1 class="card-title">Личный кабинет клиента</h1>
+                        <span id="clientInfo" class="badge">Клиент</span>
                     </div>
-                    <button class="btn btn-danger" style="width: auto;" onclick="logout()">Выйти</button>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
                 </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Мои записи</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Дата и Время</th>
+                                <th>Услуга</th>
+                                <th>Мастер</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clientAppointmentsTable">
+                            <tr><td colspan="5" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
+        <!-- 3. СТРАНИЦА МАСТЕРА -->
+        <div id="masterView" class="view-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 class="card-title">Кабинет мастера</h1>
+                        <span id="masterInfo" class="badge" style="background: #fef3c7; color: #d97706;">Мастер</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Расписание и записи клиентов</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Дата и Время</th>
+                                <th>Клиент</th>
+                                <th>Телефон</th>
+                                <th>Услуга</th>
+                            </tr>
+                        </thead>
+                        <tbody id="masterAppointmentsTable">
+                            <tr><td colspan="5" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. СТРАНИЦА АДМИНИСТРАТОРА -->
+        <div id="adminView" class="view-section">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <div>
+                        <h1 class="card-title">Панель администратора</h1>
+                        <span id="adminInfo" class="badge" style="background: #fce7f3; color: #db2777;">Администратор</span>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">Выйти из системы</button>
+                </div>
+                <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">Все записи салона</h3>
                 <div class="table-container">
                     <table>
                         <thead>
@@ -613,10 +378,8 @@
                                 <th>Действия</th>
                             </tr>
                         </thead>
-                        <tbody id="appointmentsTable">
-                            <tr>
-                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Загрузка записей...</td>
-                            </tr>
+                        <tbody id="adminAppointmentsTable">
+                            <tr><td colspan="7" style="text-align: center; padding: 2rem;">Загрузка...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -625,218 +388,31 @@
     </main>
 
     <script>
-                let selectedSlot = null;
-                let currentUser = null;
                 let jwtToken = localStorage.getItem('token');
+                let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
 
-                // Переключение вкладок
-                function switchTab(tabId, event) {
-                    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-                    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
-                    document.getElementById(tabId).classList.add('active');
-                    if (event) {
-                        event.target.classList.add('active');
-                    }
-
-                    if (tabId === 'crmTab') {
-                        checkAuth();
-                    }
-                }
-
-                // Инициализация при загрузке
                 document.addEventListener('DOMContentLoaded', () => {
-                    const dateInput = document.getElementById('dateInput');
-                    const today = new Date().toISOString().split('T')[0];
-                    dateInput.min = today;
-                    dateInput.value = today;
-
-                    loadServices();
-                    autoFillClientIfLoggedIn();
+                    checkInitialAuth();
                 });
 
-                function autoFillClientIfLoggedIn() {
-                    const userStr = localStorage.getItem('user');
-                    if (userStr) {
-                        const user = JSON.parse(userStr);
-                        if (user.role === 'user') {
-                            if (user.name) document.getElementById('clientName').value = user.name;
-                            if (user.phone) document.getElementById('clientPhone').value = user.phone;
-                        }
-                    }
-                }
-
-                async function loadServices() {
-                    try {
-                        const res = await fetch('/api/v1/services');
-                        const services = await res.json();
-                        const select = document.getElementById('serviceSelect');
-
-                        select.innerHTML = '<option value="">-- Выберите услугу --</option>';
-                        services.forEach(s => {
-                            select.innerHTML += `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`;
-                        });
-                    } catch (err) {
-                        console.error('Ошибка загрузки услуг:', err);
-                    }
-                }
-
-                async function handleServiceChange() {
-                    const serviceId = document.getElementById('serviceSelect').value;
-                    const masterSelect = document.getElementById('masterSelect');
-                    const dateInput = document.getElementById('dateInput');
-
-                    selectedSlot = null;
-                    document.getElementById('slotsContainer').innerHTML = `
-                        <div class="slots-empty-state">
-                            Выберите мастера и дату для отображения доступных слотов
-                        </div>`;
-
-                    if (!serviceId) {
-                        masterSelect.innerHTML = '<option value="">-- Сначала выберите услугу --</option>';
-                        masterSelect.disabled = true;
-                        dateInput.disabled = true;
-                        return;
-                    }
-
-                    masterSelect.innerHTML = '<option value="">Загрузка мастеров...</option>';
-                    masterSelect.disabled = true;
-
-                    try {
-                        const res = await fetch(`/api/v1/masters?service_id=${serviceId}`);
-                        const masters = await res.json();
-
-                        if (masters.length === 0) {
-                            masterSelect.innerHTML = '<option value="">Нет мастеров для этой услуги</option>';
-                            return;
-                        }
-
-                        masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
-                        masters.forEach(m => {
-                            masterSelect.innerHTML += `<option value="${m.id}">${m.name} (${m.role}) — ⭐ ${m.rating}</option>`;
-                        });
-
-                        masterSelect.disabled = false;
-                        dateInput.disabled = false;
-                    } catch (err) {
-                        console.error('Ошибка загрузки мастеров:', err);
-                    }
-                }
-
-                async function handleMasterOrDateChange() {
-                    const masterId = document.getElementById('masterSelect').value;
-                    const date = document.getElementById('dateInput').value;
-                    const container = document.getElementById('slotsContainer');
-
-                    selectedSlot = null;
-
-                    if (!masterId || !date) return;
-
-                    container.innerHTML = '<div class="slots-empty-state">Загрузка свободных слотов...</div>';
-
-                    try {
-                        const res = await fetch(`/api/v1/available-slots?date=${date}&master_id=${masterId}`);
-                        const data = await res.json();
-
-                        container.innerHTML = '';
-                        if (!data.slots || data.slots.length === 0) {
-                            container.innerHTML = '<div class="slots-empty-state" style="color: var(--danger);">Нет свободных слотов на выбранную дату</div>';
-                            return;
-                        }
-
-                        data.slots.forEach(slot => {
-                            const btn = document.createElement('div');
-                            btn.className = 'slot-btn';
-                            btn.textContent = slot;
-                            btn.onclick = () => {
-                                document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-                                btn.classList.add('selected');
-                                selectedSlot = slot;
-                            };
-                            container.appendChild(btn);
-                        });
-                    } catch (err) {
-                        console.error('Ошибка загрузки слотов:', err);
-                    }
-                }
-
-                async function handleBookingSubmit(event) {
-                    event.preventDefault();
-                    const alert = document.getElementById('bookingAlert');
-
-                    if (!selectedSlot) {
-                        alert.className = 'alert alert-error';
-                        alert.textContent = '⚠ Пожалуйста, выберите удобное время записи!';
-                        alert.style.display = 'block';
-                        return;
-                    }
-
-                    const body = {
-                        service_id: document.getElementById('serviceSelect').value,
-                        master_id: document.getElementById('masterSelect').value,
-                        date: document.getElementById('dateInput').value,
-                        slot_time: selectedSlot,
-                        client_name: document.getElementById('clientName').value,
-                        client_phone: document.getElementById('clientPhone').value,
-                        user_id: currentUser ? currentUser.id : null
-                    };
-
-                    try {
-                        const headers = { 'Content-Type': 'application/json' };
-                        if (jwtToken) headers['Authorization'] = `Bearer ${jwtToken}`;
-
-                        const res = await fetch('/api/v1/bookings', {
-                            method: 'POST',
-                            headers: headers,
-                            body: JSON.stringify(body)
-                        });
-
-                        const data = await res.json();
-
-                        if (res.ok) {
-                            alert.className = 'alert alert-success';
-                            alert.textContent = '🎉 Вы успешно записаны! Ждем вас в салоне.';
-                            alert.style.display = 'block';
-                            document.getElementById('bookingForm').reset();
-                            handleServiceChange();
-                            autoFillClientIfLoggedIn();
-                        } else {
-                            alert.className = 'alert alert-error';
-                            alert.textContent = data.error || 'Ошибка при формировании записи';
-                            alert.style.display = 'block';
-                        }
-                    } catch (err) {
-                        alert.className = 'alert alert-error';
-                        alert.textContent = 'Ошибка связи с сервером';
-                        alert.style.display = 'block';
-                    }
-                }
-
-                function toggleAuthMode(mode) {
-                    const loginForm = document.getElementById('loginForm');
-                    const registerForm = document.getElementById('registerForm');
-                    const title = document.getElementById('authTitle');
-                    const subtitle = document.getElementById('authSubtitle');
-                    document.getElementById('loginAlert').style.display = 'none';
-
-                    if (mode === 'register') {
-                        loginForm.style.display = 'none';
-                        registerForm.style.display = 'block';
-                        title.textContent = 'Регистрация клиента';
-                        subtitle.textContent = 'Создайте аккаунт для отслеживания ваших записей';
+                function checkInitialAuth() {
+                    if (jwtToken && currentUser) {
+                        routeToRoleView(currentUser.role);
                     } else {
-                        registerForm.style.display = 'none';
-                        loginForm.style.display = 'block';
-                        title.textContent = 'Вход в систему';
-                        subtitle.textContent = 'Войдите как клиент, мастер или администратор';
+                        showView('loginView');
                     }
                 }
 
-                async function handleLoginSubmit(event) {
+                function showView(viewId) {
+                    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+                    document.getElementById(viewId).classList.add('active');
+                }
+
+                async function handleLogin(event) {
                     event.preventDefault();
-                    const alert = document.getElementById('loginAlert');
                     const username = document.getElementById('username').value;
                     const password = document.getElementById('password').value;
+                    const alert = document.getElementById('loginAlert');
 
                     try {
                         const res = await fetch('/api/v1/auth/login', {
@@ -852,178 +428,139 @@
                             currentUser = data.user;
                             localStorage.setItem('token', jwtToken);
                             localStorage.setItem('user', JSON.stringify(currentUser));
-                            showDashboard();
+                            routeToRoleView(currentUser.role);
                         } else {
-                            alert.className = 'alert alert-error';
                             alert.textContent = data.error || 'Неверный логин или пароль';
                             alert.style.display = 'block';
                         }
                     } catch (err) {
-                        alert.className = 'alert alert-error';
-                        alert.textContent = 'Ошибка авторизации';
-                        alert.style.display = 'block';
-                    }
-                }
-
-                async function handleRegisterSubmit(event) {
-                    event.preventDefault();
-                    const alert = document.getElementById('loginAlert');
-
-                    const body = {
-                        name: document.getElementById('regName').value,
-                        username: document.getElementById('regUsername').value,
-                        phone: document.getElementById('regPhone').value,
-                        password: document.getElementById('regPassword').value,
-                        role: 'user'
-                    };
-
-                    try {
-                        const res = await fetch('/api/v1/auth/register', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(body)
-                        });
-
-                        const data = await res.json();
-
-                        if (res.ok) {
-                            jwtToken = data.token;
-                            currentUser = data.user;
-                            localStorage.setItem('token', jwtToken);
-                            localStorage.setItem('user', JSON.stringify(currentUser));
-                            showDashboard();
-                        } else {
-                            alert.className = 'alert alert-error';
-                            alert.textContent = data.error || 'Ошибка при регистрации';
-                            alert.style.display = 'block';
-                        }
-                    } catch (err) {
-                        alert.className = 'alert alert-error';
                         alert.textContent = 'Ошибка связи с сервером';
                         alert.style.display = 'block';
                     }
                 }
 
-                // Обновленная функция быстрого входа с корректными дефолтными логинами
-                async function quickLogin(role) {
+                function quickLogin(role) {
                     const credentials = {
-                        user: { username: 'user', password: 'user123' },       // или ваш актуальный логин клиента
+                        user: { username: 'user', password: 'user123' },
                         master: { username: 'master1', password: 'master123' },
                         admin: { username: 'admin', password: 'admin123' }
                     };
-
                     document.getElementById('username').value = credentials[role].username;
                     document.getElementById('password').value = credentials[role].password;
 
-                    // Автоматическая отправка формы входа
-                    const fakeEvent = new Event('submit', { cancelable: true });
-                    document.getElementById('loginForm').dispatchEvent(fakeEvent);
+                    const event = new Event('submit', { cancelable: true });
+                    document.getElementById('loginForm').dispatchEvent(event);
                 }
 
-                function checkAuth() {
-                    const userStr = localStorage.getItem('user');
-                    if (jwtToken && userStr) {
-                        currentUser = JSON.parse(userStr);
-                        showDashboard();
+                function routeToRoleView(role) {
+                    if (role === 'admin') {
+                        showView('adminView');
+                        document.getElementById('adminInfo').textContent = `Админ: ${currentUser.username}`;
+                        loadAdminAppointments();
+                    } else if (role === 'master') {
+                        showView('masterView');
+                        document.getElementById('masterInfo').textContent = `Мастер: ${currentUser.name || currentUser.username}`;
+                        loadMasterAppointments();
                     } else {
-                        document.getElementById('loginCard').style.display = 'block';
-                        document.getElementById('dashboardCard').style.display = 'none';
+                        showView('clientView');
+                        document.getElementById('clientInfo').textContent = `Клиент: ${currentUser.name || currentUser.username}`;
+                        loadClientAppointments();
                     }
                 }
 
-                function showDashboard() {
-                    document.getElementById('loginCard').style.display = 'none';
-                    document.getElementById('dashboardCard').style.display = 'block';
-
-                    const badgeElement = document.getElementById('userInfo');
-                    const titleElement = document.getElementById('dashboardTitle');
-
-                    if (currentUser.role === 'admin') {
-                        titleElement.textContent = 'Панель управления (CRM)';
-                        badgeElement.className = 'badge badge-admin';
-                        badgeElement.textContent = `Администратор: ${currentUser.username}`;
-                    } else if (currentUser.role === 'master') {
-                        titleElement.textContent = 'Журнал записей мастера';
-                        badgeElement.className = 'badge badge-master';
-                        badgeElement.textContent = `Мастер: ${currentUser.name || currentUser.username}`;
-                    } else {
-                        titleElement.textContent = 'Мои записи';
-                        badgeElement.className = 'badge badge-user';
-                        badgeElement.textContent = `Клиент: ${currentUser.name || currentUser.username}`;
-                    }
-
-                    autoFillClientIfLoggedIn();
-                    loadAppointments();
-                }
-
-                async function loadAppointments() {
-                    const tbody = document.getElementById('appointmentsTable');
+                async function loadClientAppointments() {
+                    const tbody = document.getElementById('clientAppointmentsTable');
                     try {
-                        const res = await fetch('/api/v1/crm/appointments', {
-                            headers: { 'Authorization': `Bearer ${jwtToken}` }
-                        });
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
 
-                        if (res.status === 401 || res.status === 403) {
-                            logout();
-                            return;
-                        }
-
-                        const appointments = await res.json();
                         tbody.innerHTML = '';
-
-                        if (!appointments || appointments.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей пока нет</td></tr>';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">У вас пока нет записей</td></tr>';
                             return;
                         }
-
-                        appointments.forEach(app => {
+                        data.forEach(app => {
                             const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-
-                            let actionButton = `<span style="color: var(--text-muted); font-size: 0.8rem;">Нет действий</span>`;
-                            if (currentUser.role === 'admin') {
-                                actionButton = `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Удалить</button>`;
-                            } else if (currentUser.role === 'user') {
-                                actionButton = `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Отменить</button>`;
-                            }
-
                             tbody.innerHTML += `
                                 <tr>
                                     <td><strong>#${app.id}</strong></td>
-                                    <td>${dateStr} <span style="color: var(--text-muted);">в</span> ${app.booking_time}</td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                    <td>${app.master_name || '-'}</td>
+                                    <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Отменить</button></td>
+                                </tr>`;
+                        });
+                    } catch (err) { console.error(err); }
+                }
+
+                async function loadMasterAppointments() {
+                    const tbody = document.getElementById('masterAppointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
+
+                        tbody.innerHTML = '';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей на вас нет</td></tr>';
+                            return;
+                        }
+                        data.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
+                                    <td><strong>${app.client_name}</strong></td>
+                                    <td>${app.client_phone}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                </tr>`;
+                        });
+                    } catch (err) { console.error(err); }
+                }
+
+                async function loadAdminAppointments() {
+                    const tbody = document.getElementById('adminAppointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', { headers: { 'Authorization': `Bearer ${jwtToken}` } });
+                        if (res.status === 401) { logout(); return; }
+                        const data = await res.json();
+
+                        tbody.innerHTML = '';
+                        if (!data || data.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей нет</td></tr>';
+                            return;
+                        }
+                        data.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} в ${app.booking_time}</td>
                                     <td><strong>${app.client_name}</strong></td>
                                     <td>${app.client_phone}</td>
                                     <td>${app.service_name || '-'}</td>
                                     <td>${app.master_name || '-'}</td>
-                                    <td>${actionButton}</td>
-                                </tr>
-                            `;
+                                    <td><button class="btn btn-danger" onclick="cancelAppointment(${app.id})">Удалить</button></td>
+                                </tr>`;
                         });
-                    } catch (err) {
-                        console.error('Ошибка загрузки записей:', err);
-                    }
+                    } catch (err) { console.error(err); }
                 }
 
-                async function deleteAppointment(id) {
-                    const confirmMsg = currentUser.role === 'admin'
-                        ? `Вы действительно хотите удалить запись #${id}?`
-                        : `Вы действительно хотите отменить вашу запись #${id}?`;
-
-                    if (!confirm(confirmMsg)) return;
-
+                async function cancelAppointment(id) {
+                    if (!confirm('Вы уверены?')) return;
                     try {
                         const res = await fetch(`/api/v1/crm/appointments/${id}`, {
                             method: 'DELETE',
                             headers: { 'Authorization': `Bearer ${jwtToken}` }
                         });
-
                         if (res.ok) {
-                            loadAppointments();
+                            routeToRoleView(currentUser.role);
                         } else {
-                            alert('Не удалось отменить запись');
+                            alert('Не удалось удалить запись');
                         }
-                    } catch (err) {
-                        console.error('Ошибка отмены:', err);
-                    }
+                    } catch (err) { console.error(err); }
                 }
 
                 function logout() {
@@ -1031,9 +568,10 @@
                     currentUser = null;
                     localStorage.removeItem('token');
                     localStorage.removeItem('user');
-                    toggleAuthMode('login');
-                    document.getElementById('loginCard').style.display = 'block';
-                    document.getElementById('dashboardCard').style.display = 'none';
+                    document.getElementById('username').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('loginAlert').style.display = 'none';
+                    showView('loginView');
                 }
     </script>
 </body>
