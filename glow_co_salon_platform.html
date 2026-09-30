@@ -1,726 +1,641 @@
 <!DOCTYPE html>
-<html lang="ru" class="h-full bg-slate-50">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Glow & Co. — Beauty Studio & CRM Platform</title>
-  
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-  
-  <!-- Font Inter -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
-  
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-    }
-    .custom-scrollbar::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    .custom-scrollbar::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 9999px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glow & Co. — Онлайн-запись и CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border: 1px solid var(--border);
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .nav-btn.active {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+        main {
+            flex: 1;
+            max-width: 1000px;
+            width: 100%;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 0.75rem;
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 0.375rem;
+            color: var(--text-muted);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+            select:focus, input:focus {
+                border-color: var(--primary);
+            }
+
+        .slots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .slot-btn {
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .slot-btn:hover {
+                border-color: var(--primary);
+            }
+
+            .slot-btn.selected {
+                background: var(--primary);
+                color: white;
+                border-color: var(--primary);
+            }
+
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn:hover {
+                background: var(--primary-hover);
+            }
+
+        .btn-danger {
+            background: var(--danger);
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.875rem;
+        }
+
+        th {
+            background: var(--bg);
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: var(--primary);
+        }
+
+        .alert {
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+    </style>
 </head>
-<body class="h-full text-slate-800 flex flex-col antialiased selection:bg-indigo-500 selection:text-white">
+<body>
 
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-40">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex justify-between h-16 items-center">
-        <!-- Logo -->
-        <div class="flex items-center gap-3">
-          <div class="bg-gradient-to-tr from-indigo-600 to-violet-600 text-white p-2.5 rounded-2xl shadow-md shadow-indigo-200">
-            <i data-lucide="sparkles" class="w-5 h-5"></i>
-          </div>
-          <div>
-            <span class="text-xl font-black tracking-tight bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-500 bg-clip-text text-transparent">Glow & Co.</span>
-            <span class="text-[10px] uppercase tracking-widest block text-slate-400 font-semibold">Beauty Studio Platform</span>
-          </div>
-        </div>
-
-        <!-- Navigation Tabs -->
-        <nav class="flex space-x-1 bg-slate-100 p-1.5 rounded-2xl border border-slate-200/60">
-          <button id="btn-tab-client" onclick="switchMainTab('client')" class="flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-sm bg-white text-indigo-600">
-            <i data-lucide="calendar" class="w-4 h-4"></i>
-            <span>Виджет записи</span>
-          </button>
-          <button id="btn-tab-crm" onclick="switchMainTab('crm')" class="flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900">
-            <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-            <span>Панель CRM</span>
-          </button>
+    <header>
+        <div class="logo">✨ Glow & Co.</div>
+        <nav>
+            <button class="nav-btn active" onclick="switchTab('bookingTab')">Виджет Записи</button>
+            <button class="nav-btn" onclick="switchTab('crmTab')">Панель CRM</button>
         </nav>
-      </div>
-    </div>
-  </header>
+    </header>
 
-  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+    <main>
+        <!-- ВИДЖЕТ ЗАПИСИ -->
+        <div id="bookingTab" class="tab-content active">
+            <div class="card">
+                <h2>Онлайн-запись в салон</h2>
+                <div id="bookingAlert" class="alert"></div>
 
-    <!-- ========================================== -->
-    <!-- 1. PUBLIC CLIENT BOOKING WIDGET -->
-    <!-- ========================================== -->
-    <section id="view-client" class="block space-y-8 animate-fade-in">
-      <!-- Hero Banner -->
-      <div class="bg-gradient-to-r from-indigo-600 via-violet-600 to-purple-600 rounded-3xl p-6 sm:p-10 text-white shadow-xl shadow-indigo-100 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl"></div>
-        <div class="relative z-10 max-w-xl space-y-3">
-          <span class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-xs font-semibold tracking-wide uppercase">Онлайн-бронирование 24/7</span>
-          <h1 class="text-3xl sm:text-4xl font-extrabold leading-tight">Запишитесь на идеальный уход в Glow & Co.</h1>
-          <p class="text-indigo-100 text-sm sm:text-base font-normal">Выберите услугу, предпочтительного мастера и удобное время за пару кликов.</p>
-        </div>
-      </div>
+                <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
+                    <!-- 1. Выбор услуги -->
+                    <div class="form-group">
+                        <label for="serviceSelect">1. Выберите услугу</label>
+                        <select id="serviceSelect" onchange="handleServiceChange()" required>
+                            <option value="">-- Загрузка услуг... --</option>
+                        </select>
+                    </div>
 
-      <!-- Booking Wizard Form -->
-      <div class="bg-white rounded-3xl shadow-sm border border-slate-200/80 p-6 sm:p-8 space-y-8">
-        
-        <!-- Step 1: Services Selection -->
-        <div class="space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">1</span>
-            <h2 class="text-lg font-bold text-slate-900">Выберите услугу</h2>
-          </div>
-          <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Dynamic Services Cards -->
-          </div>
-        </div>
+                    <!-- 2. Выбор мастера (Фильтруется по услуге) -->
+                    <div class="form-group">
+                        <label for="masterSelect">2. Выберите мастера</label>
+                        <select id="masterSelect" onchange="handleMasterOrDateChange()" disabled required>
+                            <option value="">-- Сначала выберите услугу --</option>
+                        </select>
+                    </div>
 
-        <!-- Step 2: Master Selection -->
-        <div class="space-y-4 pt-4 border-t border-slate-100">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">2</span>
-            <h2 class="text-lg font-bold text-slate-900">Выберите мастера</h2>
-          </div>
-          <div id="masters-grid" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <!-- Dynamic Masters Cards -->
-          </div>
-        </div>
+                    <!-- 3. Выбор даты -->
+                    <div class="form-group">
+                        <label for="dateInput">3. Выберите дату</label>
+                        <input type="date" id="dateInput" onchange="handleMasterOrDateChange()" disabled required>
+                    </div>
 
-        <!-- Step 3: Date & Time Picker -->
-        <div class="space-y-4 pt-4 border-t border-slate-100">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">3</span>
-            <h2 class="text-lg font-bold text-slate-900">Дата и время</h2>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-2">Дата визита</label>
-              <input type="date" id="booking-date-input" onchange="loadAvailableSlots()" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                    <!-- 4. Выбор времени -->
+                    <div class="form-group">
+                        <label>4. Выберите свободное время</label>
+                        <div id="slotsContainer" class="slots-grid">
+                            <span style="color: var(--text-muted); font-size: 0.875rem;">Выберите мастера и дату для отображения слотов</span>
+                        </div>
+                    </div>
+
+                    <!-- 5. Данные клиента -->
+                    <div class="form-group">
+                        <label for="clientName">Ваше имя</label>
+                        <input type="text" id="clientName" placeholder="Иван Иванов" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="clientPhone">Телефон</label>
+                        <input type="tel" id="clientPhone" placeholder="+7 (999) 000-00-00" required>
+                    </div>
+
+                    <button type="submit" class="btn">Подтвердить запись</button>
+                </form>
             </div>
-            <div class="md:col-span-2">
-              <label class="block text-xs font-semibold text-slate-500 mb-2">Доступное время</label>
-              <div id="slots-container" class="flex flex-wrap gap-2">
-                <p class="text-xs text-slate-400 py-2">Выберите услугу, мастера и дату для просмотра доступных слотов</p>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Step 4: Client Info Form -->
-        <div class="space-y-4 pt-4 border-t border-slate-100">
-          <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-xs">4</span>
-            <h2 class="text-lg font-bold text-slate-900">Контактная информация</h2>
-          </div>
-          <form id="booking-client-form" onsubmit="submitClientBooking(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Ваше имя *</label>
-              <input type="text" id="client-name" required placeholder="Мария Иванова" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Телефон *</label>
-              <input type="tel" id="client-phone" required placeholder="+7 (999) 000-00-00" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Email</label>
-              <input type="email" id="client-email" placeholder="example@mail.ru" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 mb-1">Комментарий к записи</label>
-              <input type="text" id="client-notes" placeholder="Пожелания мастеру..." class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            </div>
-            
-            <div class="sm:col-span-2 pt-4">
-              <button type="submit" id="btn-submit-booking" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-200 transition-all text-center flex items-center justify-center gap-2">
-                <i data-lucide="check-circle" class="w-5 h-5"></i>
-                <span>Подтвердить запись</span>
-              </button>
-            </div>
-          </form>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ========================================== -->
-    <!-- 2. PROTECTED CRM & ADMIN DASHBOARD -->
-    <!-- ========================================== -->
-    <section id="view-crm" class="hidden space-y-6 animate-fade-in">
-
-      <!-- CRM LOGIN MODAL / BOX -->
-      <div id="crm-login-box" class="max-w-md mx-auto bg-white p-8 rounded-3xl border border-slate-200/80 shadow-xl space-y-6 my-12">
-        <div class="text-center space-y-2">
-          <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-2xl mx-auto flex items-center justify-center">
-            <i data-lucide="lock" class="w-6 h-6"></i>
-          </div>
-          <h2 class="text-2xl font-black text-slate-900">Вход в CRM Glow & Co.</h2>
-          <p class="text-xs text-slate-500">Авторизуйтесь для управления записями и аналитикой</p>
-        </div>
-
-        <form onsubmit="handleCrmLogin(event)" class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Имя пользователя</label>
-            <input type="text" id="login-username" required placeholder="admin или master1" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-600 mb-1">Пароль</label>
-            <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          </div>
-          <div id="login-error-msg" class="hidden p-3 bg-red-50 text-red-600 rounded-xl text-xs font-medium border border-red-100"></div>
-          
-          <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-md text-sm">
-            Войти в систему
-          </button>
-        </form>
-
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-500 space-y-1">
-          <p class="font-semibold text-slate-700">Тестовые аккаунты:</p>
-          <p>• Админ: <code class="bg-white px-1 rounded border">admin</code> / <code class="bg-white px-1 rounded border">admin123</code></p>
-          <p>• Мастер: <code class="bg-white px-1 rounded border">master1</code> / <code class="bg-white px-1 rounded border">master123</code></p>
-        </div>
-      </div>
-
-      <!-- CRM DASHBOARD CONTENT (Hidden until auth) -->
-      <div id="crm-dashboard-content" class="hidden space-y-8">
-        
-        <!-- CRM Top Bar with Role Switcher & User Profile -->
-        <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm flex flex-wrap justify-between items-center gap-4">
-          <div class="flex items-center gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold text-lg">
-              <span id="user-avatar-initials">AD</span>
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <h2 id="user-display-name" class="text-lg font-bold text-slate-900">Администратор</h2>
-                <span id="user-display-role-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-100 text-indigo-700">ADMIN</span>
-              </div>
-              <p class="text-xs text-slate-400">Система управления Glow & Co.</p>
-            </div>
-          </div>
-
-          <!-- Role Toggle & Logout -->
-          <div class="flex items-center gap-3">
-            <div class="bg-slate-100 p-1 rounded-xl border border-slate-200 flex items-center gap-1">
-              <span class="text-xs font-semibold px-2 text-slate-500">Режим:</span>
-              <button id="role-toggle-admin" onclick="switchUserRole('admin')" class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-indigo-600 shadow-sm">Админ</button>
-              <button id="role-toggle-master" onclick="switchUserRole('master')" class="px-3 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900">Мастер</button>
+        <!-- CRM ПАНЕЛЬ -->
+        <div id="crmTab" class="tab-content">
+            <!-- ЭКРАН ЛОГИНА -->
+            <div id="loginCard" class="card" style="max-width: 400px; margin: 2rem auto;">
+                <h2>Вход в CRM</h2>
+                <div id="loginAlert" class="alert"></div>
+                <form onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group">
+                        <label for="username">Логин</label>
+                        <input type="text" id="username" placeholder="admin или master1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn">Войти</button>
+                </form>
             </div>
 
-            <button onclick="handleCrmLogout()" class="p-2.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl transition-all" title="Выйти">
-              <i data-lucide="log-out" class="w-4 h-4"></i>
-            </button>
-          </div>
-        </div>
-
-        <!-- Analytics Dashboard Row -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Выручка за месяц</span>
-              <i data-lucide="wallet" class="w-5 h-5 text-emerald-500"></i>
-            </div>
-            <p id="stat-revenue" class="text-2xl font-black text-slate-900">284 500 ₽</p>
-            <span class="inline-block text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">+14% к прошлому месяцу</span>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Всего записей</span>
-              <i data-lucide="calendar-check" class="w-5 h-5 text-indigo-500"></i>
-            </div>
-            <p id="stat-total-bookings" class="text-2xl font-black text-slate-900">142</p>
-            <span class="inline-block text-[11px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md">92% подтверждено</span>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Загрузка мастеров</span>
-              <i data-lucide="trending-up" class="w-5 h-5 text-violet-500"></i>
-            </div>
-            <p id="stat-workload" class="text-2xl font-black text-slate-900">86%</p>
-            <span class="inline-block text-[11px] font-semibold text-violet-600 bg-violet-50 px-2 py-0.5 rounded-md">Пик: 14:00 - 18:00</span>
-          </div>
-
-          <div class="bg-white p-5 rounded-3xl border border-slate-200/80 shadow-sm space-y-2">
-            <div class="flex justify-between items-center text-slate-400">
-              <span class="text-xs font-bold uppercase tracking-wider">Средний чек</span>
-              <i data-lucide="award" class="w-5 h-5 text-amber-500"></i>
-            </div>
-            <p id="stat-avg-bill" class="text-2xl font-black text-slate-900">2 450 ₽</p>
-            <span class="inline-block text-[11px] font-semibold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">Топ: Окрашивание</span>
-          </div>
-        </div>
-
-        <!-- Interactive Charts & Analytics Section -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <!-- Popular Services Chart (SVG Canvas) -->
-          <div class="lg:col-span-2 bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="bar-chart-2" class="w-5 h-5 text-indigo-600"></i>
-              <span>Популярность услуг & Динамика визитов</span>
-            </h3>
-            
-            <div class="h-52 w-full pt-4 flex items-end justify-between gap-3 px-2">
-              <div class="flex-1 flex flex-col items-center gap-2 group">
-                <div class="w-full bg-indigo-100 group-hover:bg-indigo-600 transition-all rounded-t-xl h-36 relative flex items-end justify-center">
-                  <span class="text-[10px] font-bold text-indigo-700 group-hover:text-white mb-2">45%</span>
+            <!-- ЭКРАН ДАШБОРДА CRM -->
+            <div id="dashboardCard" class="card" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div>
+                        <h2>Журнал записей</h2>
+                        <span id="userInfo" class="badge">Роль: Guest</span>
+                    </div>
+                    <button class="btn btn-danger" style="width: auto;" onclick="logout()">Выйти</button>
                 </div>
-                <span class="text-[11px] font-medium text-slate-500 truncate w-full text-center">Стрижки</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-2 group">
-                <div class="w-full bg-violet-100 group-hover:bg-violet-600 transition-all rounded-t-xl h-44 relative flex items-end justify-center">
-                  <span class="text-[10px] font-bold text-violet-700 group-hover:text-white mb-2">60%</span>
-                </div>
-                <span class="text-[11px] font-medium text-slate-500 truncate w-full text-center">Окрашивание</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-2 group">
-                <div class="w-full bg-purple-100 group-hover:bg-purple-600 transition-all rounded-t-xl h-28 relative flex items-end justify-center">
-                  <span class="text-[10px] font-bold text-purple-700 group-hover:text-white mb-2">35%</span>
-                </div>
-                <span class="text-[11px] font-medium text-slate-500 truncate w-full text-center">Маникюр</span>
-              </div>
-              <div class="flex-1 flex flex-col items-center gap-2 group">
-                <div class="w-full bg-pink-100 group-hover:bg-pink-600 transition-all rounded-t-xl h-20 relative flex items-end justify-center">
-                  <span class="text-[10px] font-bold text-pink-700 group-hover:text-white mb-2">20%</span>
-                </div>
-                <span class="text-[11px] font-medium text-slate-500 truncate w-full text-center">Укладка</span>
-              </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Дата и Время</th>
+                            <th>Клиент</th>
+                            <th>Телефон</th>
+                            <th>Услуга</th>
+                            <th>Мастер</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTable">
+                        <tr>
+                            <td colspan="7" style="text-align: center;">Загрузка записей...</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
-
-          <!-- Schedule & Availability Manager Panel -->
-          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-4">
-            <h3 class="text-base font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="clock" class="w-5 h-5 text-indigo-600"></i>
-              <span>График мастеров</span>
-            </h3>
-            <div class="space-y-3" id="masters-schedule-list">
-              <!-- Dynamic Schedule Toggles -->
-            </div>
-          </div>
         </div>
+    </main>
 
-        <!-- Live Appointments Table with Filters -->
-        <div class="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden space-y-4 p-6">
-          <div class="flex flex-wrap justify-between items-center gap-4">
-            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-              <i data-lucide="list-checks" class="w-5 h-5 text-indigo-600"></i>
-              <span>Текущие записи салона</span>
-            </h3>
+    <script>
+            let selectedSlot = null;
+            let currentUser = null;
+            let jwtToken = localStorage.getItem('token');
 
-            <!-- Filters & Search -->
-            <div class="flex flex-wrap items-center gap-2">
-              <input type="text" id="crm-search-input" onkeyup="filterCrmTable()" placeholder="Поиск по имени/тел..." class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-              
-              <select id="crm-filter-status" onchange="filterCrmTable()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-medium focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-                <option value="all">Все статусы</option>
-                <option value="confirmed">Подтверждена</option>
-                <option value="completed">Выполнена</option>
-                <option value="cancelled">Отменена</option>
-              </select>
-            </div>
-          </div>
+            // Переключение вкладок
+            function switchTab(tabId) {
+              document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+              document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
-          <!-- Table Container -->
-          <div class="overflow-x-auto custom-scrollbar">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-slate-50 border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th class="p-3">ID / Клиент</th>
-                  <th class="p-3">Услуга</th>
-                  <th class="p-3">Мастер</th>
-                  <th class="p-3">Дата & Время</th>
-                  <th class="p-3">Статус</th>
-                  <th class="p-3 text-right">Действия</th>
-                </tr>
-              </thead>
-              <tbody id="crm-appointments-tbody" class="divide-y divide-slate-100 text-xs">
-                <!-- Dynamic CRM Table Rows -->
-              </tbody>
-            </table>
-          </div>
-        </div>
+              document.getElementById(tabId).classList.add('active');
+              event.target.classList.add('active');
 
-      </div>
+              if (tabId === 'crmTab' && jwtToken) {
+                checkAuth();
+              }
+            }
 
-    </section>
+            // Инициализация при загрузке
+            document.addEventListener('DOMContentLoaded', () => {
+              // Установка минимальной даты — сегодня
+              const dateInput = document.getElementById('dateInput');
+              const today = new Date().toISOString().split('T')[0];
+              dateInput.min = today;
+              dateInput.value = today;
 
-  </main>
+              loadServices();
+            });
 
-  <!-- MODAL: Booking Details & Management -->
-  <div id="record-modal" class="hidden fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 space-y-6 shadow-2xl border border-slate-100 animate-scale-up">
-      <div class="flex justify-between items-center border-b border-slate-100 pb-4">
-        <div>
-          <h3 class="text-lg font-bold text-slate-900">Детали визита #<span id="modal-record-id">101</span></h3>
-          <p class="text-xs text-slate-400">Информация о клиенте и статусе бронирования</p>
-        </div>
-        <button onclick="closeRecordModal()" class="p-2 text-slate-400 hover:text-slate-600 rounded-xl">
-          <i data-lucide="x" class="w-5 h-5"></i>
-        </button>
-      </div>
+            // 1. Загрузка услуг
+            async function loadServices() {
+              try {
+                const res = await fetch('/api/v1/services');
+                const services = await res.json();
+                const select = document.getElementById('serviceSelect');
 
-      <div class="space-y-4 text-xs">
-        <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
-          <div>
-            <span class="text-slate-400 block font-medium">Клиент:</span>
-            <span id="modal-client-name" class="font-bold text-slate-800 text-sm">--</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block font-medium">Телефон:</span>
-            <span id="modal-client-phone" class="font-semibold text-slate-800">--</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block font-medium">Услуга:</span>
-            <span id="modal-service-name" class="font-semibold text-indigo-600">--</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block font-medium">Мастер:</span>
-            <span id="modal-master-name" class="font-semibold text-slate-800">--</span>
-          </div>
-        </div>
+                select.innerHTML = '<option value="">-- Выберите услугу --</option>';
+                services.forEach(s => {
+                  select.innerHTML += `<option value="${s.id}">${s.name} (${s.price} ₽, ${s.duration_minutes} мин)</option>`;
+                });
+              } catch (err) {
+                console.error('Ошибка загрузки услуг:', err);
+              }
+            }
 
-        <div class="flex justify-between items-center p-3 bg-indigo-50 text-indigo-900 rounded-xl">
-          <span class="font-semibold">Время записи:</span>
-          <span id="modal-datetime" class="font-bold">--</span>
-        </div>
+            // 2. Изменение услуги -> Загрузка мастеров, специализированных под эту услугу
+            async function handleServiceChange() {
+              const serviceId = document.getElementById('serviceSelect').value;
+              const masterSelect = document.getElementById('masterSelect');
+              const dateInput = document.getElementById('dateInput');
 
-        <div>
-          <label class="block font-semibold text-slate-600 mb-1">Изменить статус визита:</label>
-          <select id="modal-status-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs font-semibold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-            <option value="confirmed">Подтверждена</option>
-            <option value="completed">Выполнена</option>
-            <option value="cancelled">Отменена</option>
-          </select>
-        </div>
-      </div>
+              selectedSlot = null;
+              document.getElementById('slotsContainer').innerHTML = '<span style="color: var(--text-muted); font-size: 0.875rem;">Выберите мастера и дату для отображения слотов</span>';
 
-      <div class="flex gap-3 pt-2">
-        <button onclick="saveRecordStatus()" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-md text-xs">Сохранить</button>
-        <button id="modal-btn-delete" onclick="deleteRecordFromModal()" class="bg-red-50 hover:bg-red-100 text-red-600 font-bold px-4 py-3 rounded-xl transition-all text-xs">Удалить</button>
-      </div>
-    </div>
-  </div>
+              if (!serviceId) {
+                masterSelect.innerHTML = '<option value="">-- Сначала выберите услугу --</option>';
+                masterSelect.disabled = true;
+                dateInput.disabled = true;
+                return;
+              }
 
-  <script>
-    // DATA STORES
-    const SERVICES = [
-      { id: 1, name: 'Женская стрижка & Укладка', price: 2500, duration: '60 мин', category: 'hair', icon: 'scissors' },
-      { id: 2, name: 'Окрашивание волос', price: 4500, duration: '120 мин', category: 'hair', icon: 'sparkles' },
-      { id: 3, name: 'Мужская стрижка', price: 1500, duration: '45 мин', category: 'barber', icon: 'user' },
-      { id: 4, name: 'Маникюр с покрытием', price: 2000, duration: '60 мин', category: 'nails', icon: 'heart' }
-    ];
+              masterSelect.innerHTML = '<option value="">Загрузка мастеров...</option>';
+              masterSelect.disabled = true;
 
-    const MASTERS = [
-      { id: 1, name: 'Елена Смирнова', role: 'Топ-стилист', rating: 4.9, active: true },
-      { id: 2, name: 'Анна Иванова', role: 'Мастер маникюра', rating: 4.8, active: true },
-      { id: 3, name: 'Дмитрий Петров', role: 'Барбер-стилист', rating: 5.0, active: true }
-    ];
+              try {
+                const res = await fetch(`/api/v1/masters?service_id=${serviceId}`);
+                const masters = await res.json();
 
-    let appointments = [
-      { id: 101, client_name: 'Екатерина Романова', client_phone: '+7 (911) 234-56-78', service_id: 1, master_id: 1, date: '2026-10-01', time: '12:00', status: 'confirmed' },
-      { id: 102, client_name: 'Алексей Сидоров', client_phone: '+7 (921) 987-65-43', service_id: 3, master_id: 3, date: '2026-10-01', time: '14:30', status: 'completed' },
-      { id: 103, client_name: 'Ольга Кузнецова', client_phone: '+7 (905) 555-12-34', service_id: 4, master_id: 2, date: '2026-10-02', time: '16:00', status: 'confirmed' }
-    ];
+                if (masters.length === 0) {
+                  masterSelect.innerHTML = '<option value="">Нет мастеров для этой услуги</option>';
+                  return;
+                }
 
-    let selectedServiceId = 1;
-    let selectedMasterId = 1;
-    let selectedTimeSlot = '12:00';
-    let currentUserRole = 'admin'; // 'admin' or 'master'
-    let currentModalRecordId = null;
+                masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
+                masters.forEach(m => {
+                  masterSelect.innerHTML += `<option value="${m.id}">${m.name} (${m.role}) — ⭐ ${m.rating}</option>`;
+                });
 
-    // INITIALIZATION
-    document.addEventListener('DOMContentLoaded', () => {
-      lucide.createIcons();
-      renderServices();
-      renderMasters();
-      setDefaultDate();
-      loadAvailableSlots();
-      renderCrmAppointments();
-      renderMastersSchedule();
-    });
+                masterSelect.disabled = false;
+                dateInput.disabled = false;
+              } catch (err) {
+                console.error('Ошибка загрузки мастеров:', err);
+              }
+            }
 
-    // NAVIGATION TABS
-    function switchMainTab(tab) {
-      const clientView = document.getElementById('view-client');
-      const crmView = document.getElementById('view-crm');
-      const btnClient = document.getElementById('btn-tab-client');
-      const btnCrm = document.getElementById('btn-tab-crm');
+            // 3. Загрузка свободных слотов при выборе мастера или даты
+            async function handleMasterOrDateChange() {
+              const masterId = document.getElementById('masterSelect').value;
+              const date = document.getElementById('dateInput').value;
+              const container = document.getElementById('slotsContainer');
 
-      if (tab === 'client') {
-        clientView.classList.remove('hidden');
-        crmView.classList.add('hidden');
-        btnClient.className = 'flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-sm bg-white text-indigo-600';
-        btnCrm.className = 'flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900';
-      } else {
-        clientView.classList.add('hidden');
-        crmView.classList.remove('hidden');
-        btnCrm.className = 'flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all shadow-sm bg-white text-indigo-600';
-        btnClient.className = 'flex items-center gap-2 px-4 py-2 text-xs sm:text-sm font-semibold rounded-xl transition-all text-slate-600 hover:text-slate-900';
-      }
-    }
+              selectedSlot = null;
 
-    // CLIENT WIDGET LOGIC
-    function renderServices() {
-      const container = document.getElementById('services-grid');
-      container.innerHTML = SERVICES.map(s => `
-        <div onclick="selectService(${s.id})" id="service-card-${s.id}" class="p-4 rounded-2xl border ${s.id === selectedServiceId ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300'} cursor-pointer transition-all space-y-2">
-          <div class="flex justify-between items-start">
-            <span class="p-2 bg-indigo-100 text-indigo-600 rounded-xl"><i data-lucide="${s.icon}" class="w-4 h-4"></i></span>
-            <span class="text-xs font-bold text-slate-400">${s.duration}</span>
-          </div>
-          <h3 class="font-bold text-sm text-slate-900">${s.name}</h3>
-          <p class="text-indigo-600 font-extrabold text-sm">${s.price} ₽</p>
-        </div>
-      `).join('');
-      lucide.createIcons();
-    }
+              if (!masterId || !date) return;
 
-    function selectService(id) {
-      selectedServiceId = id;
-      renderServices();
-    }
+              container.innerHTML = 'Загрузка слотов...';
 
-    function renderMasters() {
-      const container = document.getElementById('masters-grid');
-      container.innerHTML = MASTERS.map(m => `
-        <div onclick="selectMaster(${m.id})" id="master-card-${m.id}" class="p-4 rounded-2xl border ${m.id === selectedMasterId ? 'border-indigo-600 bg-indigo-50/50 shadow-sm' : 'border-slate-200 bg-white hover:border-slate-300'} cursor-pointer transition-all flex items-center gap-3">
-          <div class="w-10 h-10 rounded-xl bg-violet-600 text-white font-bold flex items-center justify-center text-sm">${m.name.charAt(0)}</div>
-          <div>
-            <h4 class="font-bold text-sm text-slate-900">${m.name}</h4>
-            <p class="text-xs text-slate-400">${m.role}</p>
-            <span class="text-[10px] font-extrabold text-amber-500">★ ${m.rating}</span>
-          </div>
-        </div>
-      `).join('');
-    }
+              try {
+                const res = await fetch(`/api/v1/available-slots?date=${date}&master_id=${masterId}`);
+                const data = await res.json();
 
-    function selectMaster(id) {
-      selectedMasterId = id;
-      renderMasters();
-      loadAvailableSlots();
-    }
+                container.innerHTML = '';
+                if (data.slots.length === 0) {
+                  container.innerHTML = '<span style="color: var(--danger); font-size: 0.875rem;">Нет свободных слотов на этот день</span>';
+                  return;
+                }
 
-    function setDefaultDate() {
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('booking-date-input').value = today;
-    }
+                data.slots.forEach(slot => {
+                  const btn = document.createElement('div');
+                  btn.className = 'slot-btn';
+                  btn.textContent = slot;
+                  btn.onclick = () => {
+                    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                    btn.classList.add('selected');
+                    selectedSlot = slot;
+                  };
+                  container.appendChild(btn);
+                });
+              } catch (err) {
+                console.error('Ошибка загрузки слотов:', err);
+              }
+            }
 
-    function loadAvailableSlots() {
-      const slots = ['10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00'];
-      const container = document.getElementById('slots-container');
-      
-      container.innerHTML = slots.map(slot => `
-        <button type="button" onclick="selectSlot('${slot}')" class="slot-btn px-4 py-2 rounded-xl border text-xs font-bold transition-all ${slot === selectedTimeSlot ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'}">
-          ${slot}
-        </button>
-      `).join('');
-    }
+            // 4. Отправка формы записи
+            async function handleBookingSubmit(event) {
+              event.preventDefault();
+              const alert = document.getElementById('bookingAlert');
 
-    function selectSlot(slot) {
-      selectedTimeSlot = slot;
-      loadAvailableSlots();
-    }
+              if (!selectedSlot) {
+                alert.className = 'alert alert-error';
+                alert.textContent = 'Пожалуйста, выберите время записи!';
+                alert.style.display = 'block';
+                return;
+              }
 
-    function submitClientBooking(e) {
-      e.preventDefault();
-      const name = document.getElementById('client-name').value;
-      const phone = document.getElementById('client-phone').value;
-      const date = document.getElementById('booking-date-input').value;
+              const body = {
+                service_id: document.getElementById('serviceSelect').value,
+                master_id: document.getElementById('masterSelect').value,
+                date: document.getElementById('dateInput').value,
+                slot_time: selectedSlot,
+                client_name: document.getElementById('clientName').value,
+                client_phone: document.getElementById('clientPhone').value
+              };
 
-      const newBooking = {
-        id: Math.floor(100 + Math.random() * 900),
-        client_name: name,
-        client_phone: phone,
-        service_id: selectedServiceId,
-        master_id: selectedMasterId,
-        date: date,
-        time: selectedTimeSlot,
-        status: 'confirmed'
-      };
+              try {
+                const res = await fetch('/api/v1/bookings', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(body)
+                });
 
-      appointments.unshift(newBooking);
-      renderCrmAppointments();
-      
-      alert(`🎉 Успешно! Вы записаны на ${date} в ${selectedTimeSlot}. Номер записи: #${newBooking.id}`);
-      document.getElementById('booking-client-form').reset();
-    }
+                const data = await res.json();
 
-    // CRM AUTHENTICATION LOGIC
-    function handleCrmLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById('login-username').value;
-      const p = document.getElementById('login-password').value;
-      const err = document.getElementById('login-error-msg');
+                if (res.ok) {
+                  alert.className = 'alert alert-success';
+                  alert.textContent = '✅ Запись успешно создана!';
+                  alert.style.display = 'block';
+                  document.getElementById('bookingForm').reset();
+                  handleServiceChange();
+                } else {
+                  alert.className = 'alert alert-error';
+                  alert.textContent = data.error || 'Ошибка при записи';
+                  alert.style.display = 'block';
+                }
+              } catch (err) {
+                alert.className = 'alert alert-error';
+                alert.textContent = 'Ошибка подключения к серверу';
+                alert.style.display = 'block';
+              }
+            }
 
-      if ((u === 'admin' && p === 'admin123') || (u === 'master1' && p === 'master123')) {
-        currentUserRole = u === 'admin' ? 'admin' : 'master';
-        document.getElementById('crm-login-box').classList.add('hidden');
-        document.getElementById('crm-dashboard-content').classList.remove('hidden');
-        updateUserRoleUI();
-        err.classList.add('hidden');
-      } else {
-        err.textContent = 'Неверное имя пользователя или пароль!';
-        err.classList.remove('hidden');
-      }
-    }
+            // ==========================================
+            // ЛОГИКА CRM И АВТОРИЗАЦИИ
+            // ==========================================
 
-    function handleCrmLogout() {
-      document.getElementById('crm-login-box').classList.remove('hidden');
-      document.getElementById('crm-dashboard-content').classList.add('hidden');
-    }
+            async function handleLoginSubmit(event) {
+              event.preventDefault();
+              const alert = document.getElementById('loginAlert');
+              const username = document.getElementById('username').value;
+              const password = document.getElementById('password').value;
 
-    function switchUserRole(role) {
-      currentUserRole = role;
-      updateUserRoleUI();
-    }
+              try {
+                const res = await fetch('/api/v1/auth/login', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ username, password })
+                });
 
-    function updateUserRoleUI() {
-      const btnAdmin = document.getElementById('role-toggle-admin');
-      const btnMaster = document.getElementById('role-toggle-master');
-      const badge = document.getElementById('user-display-role-badge');
-      const name = document.getElementById('user-display-name');
+                const data = await res.json();
 
-      if (currentUserRole === 'admin') {
-        btnAdmin.className = 'px-3 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-indigo-600 shadow-sm';
-        btnMaster.className = 'px-3 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900';
-        badge.textContent = 'ADMIN';
-        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-indigo-100 text-indigo-700';
-        name.textContent = 'Администратор';
-      } else {
-        btnMaster.className = 'px-3 py-1.5 text-xs font-bold rounded-lg transition-all bg-white text-indigo-600 shadow-sm';
-        btnAdmin.className = 'px-3 py-1.5 text-xs font-bold rounded-lg transition-all text-slate-600 hover:text-slate-900';
-        badge.textContent = 'MASTER';
-        badge.className = 'px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase bg-violet-100 text-violet-700';
-        name.textContent = 'Елена Смирнова';
-      }
-      renderCrmAppointments();
-    }
+                if (res.ok) {
+                  jwtToken = data.token;
+                  currentUser = data.user;
+                  localStorage.setItem('token', jwtToken);
+                  localStorage.setItem('user', JSON.stringify(currentUser));
+                  showDashboard();
+                } else {
+                  alert.className = 'alert alert-error';
+                  alert.textContent = data.error || 'Неверный логин или пароль';
+                  alert.style.display = 'block';
+                }
+              } catch (err) {
+                alert.className = 'alert alert-error';
+                alert.textContent = 'Ошибка авторизации';
+                alert.style.display = 'block';
+              }
+            }
 
-    // CRM APPOINTMENTS TABLE & MODALS
-    function renderCrmAppointments() {
-      const tbody = document.getElementById('crm-appointments-tbody');
-      const search = document.getElementById('crm-search-input').value.toLowerCase();
-      const statusFilter = document.getElementById('crm-filter-status').value;
+            function checkAuth() {
+              const userStr = localStorage.getItem('user');
+              if (jwtToken && userStr) {
+                currentUser = JSON.parse(userStr);
+                showDashboard();
+              } else {
+                document.getElementById('loginCard').style.display = 'block';
+                document.getElementById('dashboardCard').style.display = 'none';
+              }
+            }
 
-      let filtered = appointments.filter(a => {
-        const matchesSearch = a.client_name.toLowerCase().includes(search) || a.client_phone.includes(search);
-        const matchesStatus = statusFilter === 'all' || a.status === statusFilter;
-        return matchesSearch && matchesStatus;
-      });
+            function showDashboard() {
+              document.getElementById('loginCard').style.display = 'none';
+              document.getElementById('dashboardCard').style.display = 'block';
+              document.getElementById('userInfo').textContent = `Пользователь: ${currentUser.username} (${currentUser.role.toUpperCase()})`;
+              loadAppointments();
+            }
 
-      tbody.innerHTML = filtered.map(a => {
-        const service = SERVICES.find(s => s.id === a.service_id);
-        const master = MASTERS.find(m => m.id === a.master_id);
+            async function loadAppointments() {
+              const tbody = document.getElementById('appointmentsTable');
+              try {
+                const res = await fetch('/api/v1/crm/appointments', {
+                  headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
 
-        let statusBadge = '';
-        if (a.status === 'confirmed') statusBadge = '<span class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-full font-bold">Подтверждена</span>';
-        else if (a.status === 'completed') statusBadge = '<span class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full font-bold">Выполнена</span>';
-        else statusBadge = '<span class="bg-red-50 text-red-700 px-2.5 py-1 rounded-full font-bold">Отменена</span>';
+                if (res.status === 401 || res.status === 403) {
+                  logout();
+                  return;
+                }
 
-        return `
-          <tr class="hover:bg-slate-50 transition-all">
-            <td class="p-3">
-              <span class="font-bold text-slate-900">#${a.id}</span>
-              <div class="font-semibold text-slate-800">${a.client_name}</div>
-              <div class="text-[10px] text-slate-400">${a.client_phone}</div>
-            </td>
-            <td class="p-3 font-medium text-slate-700">${service ? service.name : '—'}</td>
-            <td class="p-3 font-medium text-slate-700">${master ? master.name : '—'}</td>
-            <td class="p-3 font-bold text-slate-900">${a.date} в ${a.time}</td>
-            <td class="p-3 text-[10px]">${statusBadge}</td>
-            <td class="p-3 text-right">
-              <button onclick="openRecordModal(${a.id})" class="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-bold transition-all" title="Детали">
-                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
-      lucide.createIcons();
-    }
+                const appointments = await res.json();
+                tbody.innerHTML = '';
 
-    function filterCrmTable() {
-      renderCrmAppointments();
-    }
+                if (appointments.length === 0) {
+                  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">Записей пока нет</td></tr>';
+                  return;
+                }
 
-    function openRecordModal(id) {
-      currentModalRecordId = id;
-      const record = appointments.find(a => a.id === id);
-      if (!record) return;
+                appointments.forEach(app => {
+                  const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+                  const deleteBtn = currentUser.role === 'admin'
+                    ? `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Удалить</button>`
+                    : `<span style="color: var(--text-muted);">Только чтение</span>`;
 
-      const service = SERVICES.find(s => s.id === record.service_id);
-      const master = MASTERS.find(m => m.id === record.master_id);
+                  tbody.innerHTML += `
+                    <tr>
+                      <td>#${app.id}</td>
+                      <td><strong>${dateStr}</strong> в ${app.booking_time}</td>
+                      <td>${app.client_name}</td>
+                      <td>${app.client_phone}</td>
+                      <td>${app.service_name || '-'}</td>
+                      <td>${app.master_name || '-'}</td>
+                      <td>${deleteBtn}</td>
+                    </tr>
+                  `;
+                });
+              } catch (err) {
+                console.error('Ошибка загрузки записей:', err);
+              }
+            }
 
-      document.getElementById('modal-record-id').textContent = record.id;
-      document.getElementById('modal-client-name').textContent = record.client_name;
-      document.getElementById('modal-client-phone').textContent = record.client_phone;
-      document.getElementById('modal-service-name').textContent = service ? service.name : '—';
-      document.getElementById('modal-master-name').textContent = master ? master.name : '—';
-      document.getElementById('modal-datetime').textContent = `${record.date} в ${record.time}`;
-      document.getElementById('modal-status-select').value = record.status;
+            async function deleteAppointment(id) {
+              if (!confirm(`Удалить запись #${id}?`)) return;
 
-      // Restrict delete to Admin
-      const btnDelete = document.getElementById('modal-btn-delete');
-      if (currentUserRole === 'admin') btnDelete.classList.remove('hidden');
-      else btnDelete.classList.add('hidden');
+              try {
+                const res = await fetch(`/api/v1/crm/appointments/${id}`, {
+                  method: 'DELETE',
+                  headers: { 'Authorization': `Bearer ${jwtToken}` }
+                });
 
-      document.getElementById('record-modal').classList.remove('hidden');
-    }
+                if (res.ok) {
+                  loadAppointments();
+                } else {
+                  alert('Не удалось удалить запись');
+                }
+              } catch (err) {
+                console.error('Ошибка удаления:', err);
+              }
+            }
 
-    function closeRecordModal() {
-      document.getElementById('record-modal').classList.add('hidden');
-    }
-
-    function saveRecordStatus() {
-      const record = appointments.find(a => a.id === currentModalRecordId);
-      if (record) {
-        record.status = document.getElementById('modal-status-select').value;
-        renderCrmAppointments();
-      }
-      closeRecordModal();
-    }
-
-    function deleteRecordFromModal() {
-      appointments = appointments.filter(a => a.id !== currentModalRecordId);
-      renderCrmAppointments();
-      closeRecordModal();
-    }
-
-    function renderMastersSchedule() {
-      const container = document.getElementById('masters-schedule-list');
-      container.innerHTML = MASTERS.map(m => `
-        <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border border-slate-100">
-          <div>
-            <p class="font-bold text-xs text-slate-800">${m.name}</p>
-            <p class="text-[10px] text-slate-400">10:00 - 20:00 (Перерыв 14:00)</p>
-          </div>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" ${m.active ? 'checked' : ''} onchange="m.active = !m.active" class="sr-only peer">
-            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
-          </label>
-        </div>
-      `).join('');
-    }
-  </script>
+            function logout() {
+              jwtToken = null;
+              currentUser = null;
+              localStorage.removeItem('token');
+              localStorage.removeItem('user');
+              document.getElementById('loginCard').style.display = 'block';
+              document.getElementById('dashboardCard').style.display = 'none';
+            }
+    </script>
 </body>
 </html>
