@@ -1,252 +1,332 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
-require('dotenv').config();
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_glow_co';
 
-// Настройка CORS (разрешает запросы с любых веб-сайтов и HTML-страниц)
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Подключение к PostgreSQL через переменные окружения
+// Подключение к базе данных PostgreSQL (Render PostgreSQL / DATABASE_URL)
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost')
-        ? { rejectUnauthorized: false }
-        : false
+    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
 });
 
-// Автоматическое создание таблиц в базе данных при запуске сервера
-async function initDatabase() {
-    if (!process.env.DATABASE_URL) {
-        console.log('DATABASE_URL не указан. База данных не подключена.');
-        return;
+// ==========================================
+// MIDDLEWARE ДЛЯ АВТОРИЗАЦИИ И ПРОВЕРКИ РОЛЕЙ
+// ==========================================
+function authenticateToken(req, res, next) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+
+    if (!token) {
+        return res.status(401).json({ error: 'Доступ запрещен. Токен не предоставлен.' });
     }
 
-    const createTablesQuery = `
-    CREATE TABLE IF NOT EXISTS services (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      category VARCHAR(100) NOT NULL,
-      duration_minutes INT NOT NULL,
-      price DECIMAL(10, 2) NOT NULL
-    );
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Недействительный или истекший токен.' });
+        }
+        req.user = user;
+        next();
+    });
+}
 
-    CREATE TABLE IF NOT EXISTS masters (
-      id SERIAL PRIMARY KEY,
-      name VARCHAR(255) NOT NULL,
-      role VARCHAR(100) NOT NULL,
-      rating DECIMAL(3, 2) DEFAULT 5.0
-    );
+function requireRole(...allowedRoles) {
+    return (req, res, next) => {
+        if (!req.user || !allowedRoles.includes(req.user.role)) {
+            return res.status(403).json({ error: 'Недостаточно прав для выполнения операции.' });
+        }
+        next();
+    };
+}
 
-    CREATE TABLE IF NOT EXISTS appointments (
-      id SERIAL PRIMARY KEY,
-      client_name VARCHAR(255) NOT NULL,
-      client_phone VARCHAR(50) NOT NULL,
-      service_id INT REFERENCES services(id) ON DELETE SET NULL,
-      master_id INT REFERENCES masters(id) ON DELETE SET NULL,
-      booking_date DATE NOT NULL,
-      booking_time VARCHAR(10) NOT NULL,
-      status VARCHAR(50) DEFAULT 'confirmed',
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
-  `;
-
+// ==========================================
+// ИНИЦИАЛИЗАЦИЯ БАЗЫ ДАННЫХ И СИДИРОВАНИЕ
+// ==========================================
+async function initDb() {
     try {
-        const client = await pool.connect();
-        await client.query(createTablesQuery);
+        // 1. Таблица услуг
+        await pool.query(`
+      CREATE TABLE IF NOT EXISTS services (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        price INT NOT NULL,
+        duration_minutes INT NOT NULL
+      );
+    `);
 
-        // Проверяем, есть ли начальные данные
-        const serviceCheck = await client.query('SELECT COUNT(*) FROM services');
-        if (parseInt(serviceCheck.rows[0].count) === 0) {
-            await client.query(`
-        INSERT INTO services (name, category, duration_minutes, price) VALUES
-        ('Женская стрижка & Укладка', 'Волосы', 60, 3500.00),
-        ('Сложное окрашивание (Airtouch)', 'Волосы', 180, 12000.00),
-        ('Аппаратный Маникюр + Гель-лак', 'Ногли', 90, 2800.00),
-        ('Архитектура и окрашивание бровей', 'Брови/Ресницы', 45, 1800.00);
+        // 2. Таблица мастеров
+        await pool.query(`
+      CREATE TABLE IF NOT EXISTS masters (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL,
+        role VARCHAR(100) NOT NULL,
+        rating NUMERIC(2, 1) DEFAULT 5.0
+      );
+    `);
+
+        // 3. Таблица записей
+        await pool.query(`
+      CREATE TABLE IF NOT EXISTS bookings (
+        id SERIAL PRIMARY KEY,
+        client_name VARCHAR(100) NOT NULL,
+        client_phone VARCHAR(50) NOT NULL,
+        service_id INT REFERENCES services(id),
+        master_id INT REFERENCES masters(id),
+        booking_date DATE NOT NULL,
+        booking_time VARCHAR(10) NOT NULL,
+        status VARCHAR(20) DEFAULT 'confirmed',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+        // 4. Таблица пользователей для CRM
+        await pool.query(`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(50) UNIQUE NOT NULL,
+        password_hash VARCHAR(255) NOT NULL,
+        role VARCHAR(20) NOT NULL DEFAULT 'master'
+      );
+    `);
+
+        // Заполнение начальными данными, если таблицы пусты
+        const servicesCount = await pool.query('SELECT COUNT(*) FROM services');
+        if (parseInt(servicesCount.rows[0].count) === 0) {
+            await pool.query(`
+        INSERT INTO services (name, price, duration_minutes) VALUES
+        ('Женская стрижка & Укладка', 2500, 60),
+        ('Мужская стрижка', 1500, 45),
+        ('Окрашивание волос', 4500, 120),
+        ('Маникюр с покрытием', 2000, 60);
       `);
         }
 
-        const masterCheck = await client.query('SELECT COUNT(*) FROM masters');
-        if (parseInt(masterCheck.rows[0].count) === 0) {
-            await client.query(`
+        const mastersCount = await pool.query('SELECT COUNT(*) FROM masters');
+        if (parseInt(mastersCount.rows[0].count) === 0) {
+            await pool.query(`
         INSERT INTO masters (name, role, rating) VALUES
-        ('Анна Смирнова', 'Топ-Стилист', 4.9),
-        ('Елена Васильева', 'Мастер Маникюра', 4.85),
-        ('Мария Иванова', 'Бровист', 5.0);
+        ('Елена Смирнова', 'Топ-стилист', 4.9),
+        ('Анна Иванова', 'Мастер маникюра', 4.8),
+        ('Дмитрий Петров', 'Барбер-стилист', 5.0);
       `);
         }
 
-        client.release();
+        const usersCount = await pool.query('SELECT COUNT(*) FROM users');
+        if (parseInt(usersCount.rows[0].count) === 0) {
+            const adminHash = await bcrypt.hash('admin123', 10);
+            const masterHash = await bcrypt.hash('master123', 10);
+
+            await pool.query(`
+        INSERT INTO users (username, password_hash, role) VALUES
+        ('admin', $1, 'admin'),
+        ('master1', $2, 'master');
+      `, [adminHash, masterHash]);
+        }
+
         console.log('✅ База данных успешно инициализирована!');
     } catch (err) {
-        console.error('⚠️️ Ошибка инициализации базы данных:', err.message);
+        console.error('❌ Ошибка инициализации БД:', err);
     }
 }
 
-// Запуск инициализации БД
-initDatabase();
+initDb();
 
-// --- 1. ПРОВЕРКА РАБОТОСПОСОБНОСТИ СЕРВЕРА ---
+// ==========================================
+// ПУБЛИЧНЫЕ МАРШРУТЫ (ДЛЯ КЛИЕНТСКОГО ВИДЖЕТА)
+// ==========================================
+
+// Проверка статуса сервера
 app.get('/', (req, res) => {
     res.json({
         status: 'online',
-        message: 'Бэкенд системы онлайн-записи салона красоты успешно работает!',
-        timestamp: new Date()
+        message: 'Бэкенд системы онлайн-записи салона красоты успешно работает!'
     });
 });
 
-// --- 2. ПОЛУЧЕНИЕ СПИСКА УСЛУГ ---
+// Получить список услуг
 app.get('/api/v1/services', async (req, res) => {
     try {
-        if (!process.env.DATABASE_URL) {
-            // Мок-данные для локального тестирования без подключенной БД
-            return res.json([
-                { id: 1, name: 'Женская стрижка & Укладка', category: 'Волосы', duration_minutes: 60, price: 3500 },
-                { id: 2, name: 'Сложное окрашивание (Airtouch)', category: 'Волосы', duration_minutes: 180, price: 12000 },
-                { id: 3, name: 'Аппаратный Маникюр + Гель-лак', category: 'Ногли', duration_minutes: 90, price: 2800 },
-                { id: 4, name: 'Архитектура и окрашивание бровей', category: 'Брови/Ресницы', duration_minutes: 45, price: 1800 }
-            ]);
-        }
-        const { rows } = await pool.query('SELECT * FROM services ORDER BY category, id');
-        res.json(rows);
+        const result = await pool.query('SELECT * FROM services ORDER BY id ASC');
+        res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: 'Ошибка сервера при получении услуг' });
+        res.status(500).json({ error: 'Ошибка при получении списка услуг' });
     }
 });
 
-// --- 3. ПОЛУЧЕНИЕ СПИСКА МАСТЕРОВ ---
+// Получить список мастеров
 app.get('/api/v1/masters', async (req, res) => {
     try {
-        if (!process.env.DATABASE_URL) {
-            return res.json([
-                { id: 1, name: 'Анна Смирнова', role: 'Топ-Стилист', rating: 4.9 },
-                { id: 2, name: 'Елена Васильева', role: 'Мастер Маникюра', rating: 4.85 },
-                { id: 3, name: 'Мария Иванова', role: 'Бровист', rating: 5.0 }
-            ]);
-        }
-        const { rows } = await pool.query('SELECT * FROM masters ORDER BY id');
-        res.json(rows);
+        const result = await pool.query('SELECT * FROM masters ORDER BY id ASC');
+        res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: 'Ошибка сервера при получении мастеров' });
+        res.status(500).json({ error: 'Ошибка при получении списка мастеров' });
     }
 });
 
-// --- 4. ПОЛУЧЕНИЕ СВОБОДНЫХ ВРЕМЕННЫХ СЛОТОВ ---
+// Расчет свободных слотов времени на дату для мастера
 app.get('/api/v1/available-slots', async (req, res) => {
+    const { date, master_id } = req.query;
+
+    if (!date || !master_id) {
+        return res.status(400).json({ error: 'Укажите date и master_id' });
+    }
+
+    const allSlots = ['10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00'];
+
     try {
-        const { date, master_id } = req.query;
-        const targetDate = date || new Date().toISOString().split('T')[0];
+        // Получаем уже занятые слоты на эту дату у выбранного мастера
+        const busySlotsResult = await pool.query(
+            'SELECT booking_time FROM bookings WHERE booking_date = $1 AND master_id = $2 AND status != $3',
+            [date, master_id, 'cancelled']
+        );
 
-        // Стандартная сетка всех рабочих слотов мастера
-        const allPossibleSlots = ["10:00", "11:30", "13:00", "14:30", "16:00", "17:30", "19:00"];
-
-        if (!process.env.DATABASE_URL) {
-            return res.json({ date: targetDate, master_id: master_id || 1, slots: allPossibleSlots });
-        }
-
-        // Извлекаем уже занятые слоты мастера на эту дату
-        const bookedQuery = `
-      SELECT booking_time FROM appointments 
-      WHERE booking_date = $1 AND master_id = $2 AND status != 'cancelled'
-    `;
-        const { rows } = await pool.query(bookedQuery, [targetDate, master_id || 1]);
-        const bookedTimes = rows.map(r => r.booking_time);
-
-        // Фильтруем свободной время
-        const availableSlots = allPossibleSlots.filter(time => !bookedTimes.includes(time));
+        const busySlots = busySlotsResult.rows.map(row => row.booking_time);
+        const availableSlots = allSlots.filter(slot => !busySlots.includes(slot));
 
         res.json({
-            date: targetDate,
-            master_id: parseInt(master_id) || 1,
+            date,
+            master_id: parseInt(master_id),
             slots: availableSlots
         });
     } catch (err) {
-        res.status(500).json({ error: 'Ошибка сервера при получении слотов' });
+        res.status(500).json({ error: 'Ошибка при расчете свободных слотов' });
     }
 });
 
-// --- 5. СОЗДАНИЕ НОВОЙ ЗАПИСИ (БРОНИРОВАНИЕ) ---
+// Создание записи
 app.post('/api/v1/bookings', async (req, res) => {
+    const { client_name, client_phone, service_id, master_id, date, slot_time } = req.body;
+
+    if (!client_name || !client_phone || !service_id || !master_id || !date || !slot_time) {
+        return res.status(400).json({ error: 'Все поля обязательны для заполнения' });
+    }
+
     try {
-        const { client_name, client_phone, service_id, master_id, date, slot_time } = req.body;
+        // Проверка занятости слота
+        const checkSlot = await pool.query(
+            'SELECT id FROM bookings WHERE booking_date = $1 AND master_id = $2 AND booking_time = $3 AND status != $4',
+            [date, master_id, slot_time, 'cancelled']
+        );
 
-        if (!client_name || !client_phone || !date || !slot_time) {
-            return res.status(400).json({ error: 'Заполните все обязательные поля' });
+        if (checkSlot.rows.length > 0) {
+            return res.status(409).json({ error: 'Выбранное время уже занято. Выберите другой слот.' });
         }
 
-        if (!process.env.DATABASE_URL) {
-            return res.status(201).json({
-                success: true,
-                message: 'Запись успешно создана (режим демонстрации)',
-                booking: { id: Math.floor(Math.random() * 9000) + 1000, client_name, client_phone, date, slot_time }
-            });
-        }
-
-        // Вставляем запись в базу данных
-        const insertQuery = `
-      INSERT INTO appointments (client_name, client_phone, service_id, master_id, booking_date, booking_time)
-      VALUES ($1, $2, $3, $4, $5, $6)
-      RETURNING *
-    `;
-        const values = [client_name, client_phone, service_id || 1, master_id || 1, date, slot_time];
-        const { rows } = await pool.query(insertQuery, values);
+        const insertResult = await pool.query(
+            `INSERT INTO bookings (client_name, client_phone, service_id, master_id, booking_date, booking_time)
+       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [client_name, client_phone, service_id, master_id, date, slot_time]
+        );
 
         res.status(201).json({
             success: true,
             message: 'Запись успешно создана!',
-            booking: rows[0]
+            booking: insertResult.rows[0]
         });
     } catch (err) {
-        console.error('Ошибка записи:', err);
-        res.status(500).json({ error: 'Ошибка сервера при создании записи' });
+        console.error('Ошибка создания записи:', err);
+        res.status(500).json({ error: 'Ошибка при сохранении записи в базе данных' });
     }
 });
 
-// --- 6. ПОЛУЧЕНИЕ ВСЕХ ЗАПИСЕЙ (ДЛЯ CRM ПАНЕЛИ) ---
-app.get('/api/v1/crm/appointments', async (req, res) => {
+// ==========================================
+// АВТОРИЗАЦИЯ ДЛЯ CRM (JWT)
+// ==========================================
+
+// Логин пользователя CRM
+app.post('/api/v1/auth/login', async (req, res) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ error: 'Введите имя пользователя и пароль' });
+    }
+
     try {
-        if (!process.env.DATABASE_URL) {
-            return res.json([
-                {
-                    id: 101,
-                    client_name: 'Виктория К.',
-                    client_phone: '+7 (999) 123-45-67',
-                    service_name: 'Женская стрижка & Укладка',
-                    master_name: 'Анна Смирнова',
-                    booking_date: '2026-10-01',
-                    booking_time: '11:30',
-                    status: 'confirmed'
-                }
-            ]);
+        const userResult = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Неверное имя пользователя или пароль' });
         }
 
+        const user = userResult.rows[0];
+        const validPassword = await bcrypt.compare(password, user.password_hash);
+
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Неверное имя пользователя или пароль' });
+        }
+
+        const token = jwt.sign(
+            { id: user.id, username: user.username, role: user.role },
+            JWT_SECRET,
+            { expiresIn: '8h' }
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: { id: user.id, username: user.username, role: user.role }
+        });
+    } catch (err) {
+        console.error('Ошибка входа:', err);
+        res.status(500).json({ error: 'Ошибка сервера при авторизации' });
+    }
+});
+
+// ==========================================
+// ЗАЩИЩЕННЫЕ МАРШРУТЫ CRM (ТРЕБУЮТ JWT ТОКЕН)
+// ==========================================
+
+// Получить список всех записей (доступно для admin и master)
+app.get('/api/v1/crm/appointments', authenticateToken, requireRole('admin', 'master'), async (req, res) => {
+    try {
         const query = `
       SELECT 
-        a.id, 
-        a.client_name, 
-        a.client_phone, 
-        s.name AS service_name, 
-        m.name AS master_name, 
-        a.booking_date, 
-        a.booking_time, 
-        a.status
-      FROM appointments a
-      LEFT JOIN services s ON a.service_id = s.id
-      LEFT JOIN masters m ON a.master_id = m.id
-      ORDER BY a.booking_date DESC, a.booking_time ASC
+        b.id,
+        b.client_name,
+        b.client_phone,
+        b.booking_date,
+        b.booking_time,
+        b.status,
+        s.name AS service_name,
+        m.name AS master_name
+      FROM bookings b
+      LEFT JOIN services s ON b.service_id = s.id
+      LEFT JOIN masters m ON b.master_id = m.id
+      ORDER BY b.booking_date DESC, b.booking_time DESC;
     `;
-        const { rows } = await pool.query(query);
-        res.json(rows);
+        const result = await pool.query(query);
+        res.json(result.rows);
     } catch (err) {
-        res.status(500).json({ error: 'Ошибка сервера при получении списка записей' });
+        console.error('Ошибка получения CRM записей:', err);
+        res.status(500).json({ error: 'Ошибка при получении записей CRM' });
+    }
+});
+
+// Удаление записи (доступно только роли admin)
+app.delete('/api/v1/crm/appointments/:id', authenticateToken, requireRole('admin'), async (req, res) => {
+    const appointmentId = req.params.id;
+
+    try {
+        const result = await pool.query('DELETE FROM bookings WHERE id = $1 RETURNING *', [appointmentId]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Запись не найдена' });
+        }
+
+        res.json({ success: true, message: 'Запись успешно удалена администратором' });
+    } catch (err) {
+        res.status(500).json({ error: 'Ошибка при удалении записи' });
     }
 });
 
 // Запуск сервера
-const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-    console.log(`🚀 Сервер бэкенда запущен на порту ${PORT}`);
+    console.log(`🚀 Сервер запущен и слушает порт ${PORT}`);
 });
