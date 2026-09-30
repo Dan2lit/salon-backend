@@ -282,6 +282,18 @@
                 transform: translateY(0);
             }
 
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+            .btn-secondary:hover {
+                background: #e2e8f0;
+                box-shadow: none;
+            }
+
         .btn-danger {
             background: var(--danger-bg);
             color: var(--danger);
@@ -343,6 +355,21 @@
             color: var(--primary);
         }
 
+        .badge-user {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .badge-master {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .badge-admin {
+            background: #fce7f3;
+            color: #db2777;
+        }
+
         /* ALERTS */
         .alert {
             padding: 0.9rem 1.1rem;
@@ -373,6 +400,38 @@
             gap: 1rem;
         }
 
+        .auth-switch {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+            .auth-switch a {
+                color: var(--primary);
+                font-weight: 700;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+                .auth-switch a:hover {
+                    text-decoration: underline;
+                }
+
+        .quick-roles {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px dashed var(--border);
+        }
+
+            .quick-roles button {
+                flex: 1;
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+
         @media (max-width: 640px) {
             .client-grid {
                 grid-template-columns: 1fr;
@@ -396,7 +455,7 @@
         </div>
         <nav>
             <button class="nav-btn active" onclick="switchTab('bookingTab', event)">Виджет Записи</button>
-            <button class="nav-btn" onclick="switchTab('crmTab', event)">Панель CRM</button>
+            <button class="nav-btn" onclick="switchTab('crmTab', event)">Кабинет / CRM</button>
         </nav>
     </header>
 
@@ -472,34 +531,71 @@
             </div>
         </div>
 
-        <!-- CRM ПАНЕЛЬ -->
+        <!-- CRM / ЛИЧНЫЙ КАБИНЕТ -->
         <div id="crmTab" class="tab-content">
-            <!-- ЭКРАН ЛОГИНА -->
-            <div id="loginCard" class="card" style="max-width: 420px; margin: 2rem auto;">
-                <h1 class="card-title">Вход в CRM</h1>
-                <p class="card-subtitle">Введите учетные данные для управления записями</p>
+            <!-- ВХОД / РЕГИСТРАЦИЯ -->
+            <div id="loginCard" class="card" style="max-width: 440px; margin: 2rem auto;">
+                <h1 id="authTitle" class="card-title">Вход в систему</h1>
+                <p id="authSubtitle" class="card-subtitle">Войдите как клиент, мастер или администратор</p>
 
                 <div id="loginAlert" class="alert"></div>
 
-                <form onsubmit="handleLoginSubmit(event)">
+                <!-- ФОРМА ВХОДА -->
+                <form id="loginForm" onsubmit="handleLoginSubmit(event)">
                     <div class="form-group">
-                        <label for="username" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
-                        <input type="text" id="username" placeholder="admin или master1" required>
+                        <label for="username" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин или Email</label>
+                        <input type="text" id="username" placeholder="user, master или admin" required>
                     </div>
                     <div class="form-group">
                         <label for="password" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
                         <input type="password" id="password" placeholder="••••••••" required>
                     </div>
-                    <button type="submit" class="btn">Войти в систему</button>
+                    <button type="submit" class="btn">Войти в кабинет</button>
+
+                    <div class="auth-switch">
+                        Нет аккаунта? <a onclick="toggleAuthMode('register')">Зарегистрироваться</a>
+                    </div>
                 </form>
+
+                <!-- ФОРМА РЕГИСТРАЦИИ (КЛИЕНТ) -->
+                <form id="registerForm" onsubmit="handleRegisterSubmit(event)" style="display: none;">
+                    <div class="form-group">
+                        <label for="regName" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Ваше имя</label>
+                        <input type="text" id="regName" placeholder="Анна Иванова" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regUsername" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
+                        <input type="text" id="regUsername" placeholder="anna_client" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Телефон</label>
+                        <input type="tel" id="regPhone" placeholder="+7 (999) 000-00-00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
+                        <input type="password" id="regPassword" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn">Создать аккаунт</button>
+
+                    <div class="auth-switch">
+                        Уже есть аккаунт? <a onclick="toggleAuthMode('login')">Войти</a>
+                    </div>
+                </form>
+
+                <!-- ДЕМО БЫСТРЫЙ ВХОД ДЛЯ ТЕСТИРОВАНИЯ -->
+                <div class="quick-roles">
+                    <button type="button" class="btn btn-secondary" onclick="quickLogin('user')">👤 Клиент</button>
+                    <button type="button" class="btn btn-secondary" onclick="quickLogin('master')">✂ Мастер</button>
+                    <button type="button" class="btn btn-secondary" onclick="quickLogin('admin')">👑 Админ</button>
+                </div>
             </div>
 
-            <!-- ЭКРАН ДАШБОРДА CRM -->
+            <!-- ЭКРАН ЛИЧНОГО КАБИНЕТА / CRM -->
             <div id="dashboardCard" class="card" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
                     <div>
-                        <h1 class="card-title">Журнал записей</h1>
-                        <span id="userInfo" class="badge" style="margin-top: 0.35rem;">Роль: Guest</span>
+                        <h1 id="dashboardTitle" class="card-title">Журнал записей</h1>
+                        <span id="userInfo" class="badge">Загрузка...</span>
                     </div>
                     <button class="btn btn-danger" style="width: auto;" onclick="logout()">Выйти</button>
                 </div>
@@ -529,305 +625,430 @@
     </main>
 
     <script>
-            let selectedSlot = null;
-            let currentUser = null;
-            let jwtToken = localStorage.getItem('token');
+                let selectedSlot = null;
+                let currentUser = null;
+                let jwtToken = localStorage.getItem('token');
 
-            // Переключение вкладок
-            function switchTab(tabId, event) {
-              document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-              document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+                // Переключение вкладок
+                function switchTab(tabId, event) {
+                    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
-              document.getElementById(tabId).classList.add('active');
-              if (event) {
-                event.target.classList.add('active');
-              }
+                    document.getElementById(tabId).classList.add('active');
+                    if (event) {
+                        event.target.classList.add('active');
+                    }
 
-              if (tabId === 'crmTab' && jwtToken) {
-                checkAuth();
-              }
-            }
-
-            // Инициализация при загрузке
-            document.addEventListener('DOMContentLoaded', () => {
-              const dateInput = document.getElementById('dateInput');
-              const today = new Date().toISOString().split('T')[0];
-              dateInput.min = today;
-              dateInput.value = today;
-
-              loadServices();
-            });
-
-            // 1. Загрузка услуг
-            async function loadServices() {
-              try {
-                const res = await fetch('/api/v1/services');
-                const services = await res.json();
-                const select = document.getElementById('serviceSelect');
-
-                select.innerHTML = '<option value="">-- Выберите услугу --</option>';
-                services.forEach(s => {
-                  select.innerHTML += `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`;
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки услуг:', err);
-              }
-            }
-
-            // 2. Изменение услуги -> Загрузка мастеров
-            async function handleServiceChange() {
-              const serviceId = document.getElementById('serviceSelect').value;
-              const masterSelect = document.getElementById('masterSelect');
-              const dateInput = document.getElementById('dateInput');
-
-              selectedSlot = null;
-              document.getElementById('slotsContainer').innerHTML = `
-                <div class="slots-empty-state">
-                  Выберите мастера и дату для отображения доступных слотов
-                </div>`;
-
-              if (!serviceId) {
-                masterSelect.innerHTML = '<option value="">-- Сначала выберите услугу --</option>';
-                masterSelect.disabled = true;
-                dateInput.disabled = true;
-                return;
-              }
-
-              masterSelect.innerHTML = '<option value="">Загрузка мастеров...</option>';
-              masterSelect.disabled = true;
-
-              try {
-                const res = await fetch(`/api/v1/masters?service_id=${serviceId}`);
-                const masters = await res.json();
-
-                if (masters.length === 0) {
-                  masterSelect.innerHTML = '<option value="">Нет мастеров для этой услуги</option>';
-                  return;
+                    if (tabId === 'crmTab') {
+                        checkAuth();
+                    }
                 }
 
-                masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
-                masters.forEach(m => {
-                  masterSelect.innerHTML += `<option value="${m.id}">${m.name} (${m.role}) — ⭐ ${m.rating}</option>`;
+                // Инициализация при загрузке
+                document.addEventListener('DOMContentLoaded', () => {
+                    const dateInput = document.getElementById('dateInput');
+                    const today = new Date().toISOString().split('T')[0];
+                    dateInput.min = today;
+                    dateInput.value = today;
+
+                    loadServices();
+                    autoFillClientIfLoggedIn();
                 });
 
-                masterSelect.disabled = false;
-                dateInput.disabled = false;
-              } catch (err) {
-                console.error('Ошибка загрузки мастеров:', err);
-              }
-            }
-
-            // 3. Загрузка свободных слотов
-            async function handleMasterOrDateChange() {
-              const masterId = document.getElementById('masterSelect').value;
-              const date = document.getElementById('dateInput').value;
-              const container = document.getElementById('slotsContainer');
-
-              selectedSlot = null;
-
-              if (!masterId || !date) return;
-
-              container.innerHTML = '<div class="slots-empty-state">Загрузка свободных слотов...</div>';
-
-              try {
-                const res = await fetch(`/api/v1/available-slots?date=${date}&master_id=${masterId}`);
-                const data = await res.json();
-
-                container.innerHTML = '';
-                if (!data.slots || data.slots.length === 0) {
-                  container.innerHTML = '<div class="slots-empty-state" style="color: var(--danger);">Нет свободных слотов на выбранную дату</div>';
-                  return;
+                // Автоподстановка данных, если клиент уже авторизован
+                function autoFillClientIfLoggedIn() {
+                    const userStr = localStorage.getItem('user');
+                    if (userStr) {
+                        const user = JSON.parse(userStr);
+                        if (user.role === 'user') {
+                            if (user.name) document.getElementById('clientName').value = user.name;
+                            if (user.phone) document.getElementById('clientPhone').value = user.phone;
+                        }
+                    }
                 }
 
-                data.slots.forEach(slot => {
-                  const btn = document.createElement('div');
-                  btn.className = 'slot-btn';
-                  btn.textContent = slot;
-                  btn.onclick = () => {
-                    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    selectedSlot = slot;
-                  };
-                  container.appendChild(btn);
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки слотов:', err);
-              }
-            }
+                // 1. Загрузка услуг
+                async function loadServices() {
+                    try {
+                        const res = await fetch('/api/v1/services');
+                        const services = await res.json();
+                        const select = document.getElementById('serviceSelect');
 
-            // 4. Отправка формы записи
-            async function handleBookingSubmit(event) {
-              event.preventDefault();
-              const alert = document.getElementById('bookingAlert');
-
-              if (!selectedSlot) {
-                alert.className = 'alert alert-error';
-                alert.textContent = '⚠️️ Пожалуйста, выберите удобное время записи!';
-                alert.style.display = 'block';
-                return;
-              }
-
-              const body = {
-                service_id: document.getElementById('serviceSelect').value,
-                master_id: document.getElementById('masterSelect').value,
-                date: document.getElementById('dateInput').value,
-                slot_time: selectedSlot,
-                client_name: document.getElementById('clientName').value,
-                client_phone: document.getElementById('clientPhone').value
-              };
-
-              try {
-                const res = await fetch('/api/v1/bookings', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body)
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                  alert.className = 'alert alert-success';
-                  alert.textContent = '🎉 Вы успешно записаны! Ждем вас в салоне.';
-                  alert.style.display = 'block';
-                  document.getElementById('bookingForm').reset();
-                  handleServiceChange();
-                } else {
-                  alert.className = 'alert alert-error';
-                  alert.textContent = data.error || 'Ошибка при формировании записи';
-                  alert.style.display = 'block';
-                }
-              } catch (err) {
-                alert.className = 'alert alert-error';
-                alert.textContent = 'Ошибка связи с сервером';
-                alert.style.display = 'block';
-              }
-            }
-
-            // ==========================================
-            // ЛОГИКА CRM И АВТОРИЗАЦИИ
-            // ==========================================
-
-            async function handleLoginSubmit(event) {
-              event.preventDefault();
-              const alert = document.getElementById('loginAlert');
-              const username = document.getElementById('username').value;
-              const password = document.getElementById('password').value;
-
-              try {
-                const res = await fetch('/api/v1/auth/login', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username, password })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                  jwtToken = data.token;
-                  currentUser = data.user;
-                  localStorage.setItem('token', jwtToken);
-                  localStorage.setItem('user', JSON.stringify(currentUser));
-                  showDashboard();
-                } else {
-                  alert.className = 'alert alert-error';
-                  alert.textContent = data.error || 'Неверное имя пользователя или пароль';
-                  alert.style.display = 'block';
-                }
-              } catch (err) {
-                alert.className = 'alert alert-error';
-                alert.textContent = 'Ошибка авторизации';
-                alert.style.display = 'block';
-              }
-            }
-
-            function checkAuth() {
-              const userStr = localStorage.getItem('user');
-              if (jwtToken && userStr) {
-                currentUser = JSON.parse(userStr);
-                showDashboard();
-              } else {
-                document.getElementById('loginCard').style.display = 'block';
-                document.getElementById('dashboardCard').style.display = 'none';
-              }
-            }
-
-            function showDashboard() {
-              document.getElementById('loginCard').style.display = 'none';
-              document.getElementById('dashboardCard').style.display = 'block';
-              document.getElementById('userInfo').textContent = `Пользователь: ${currentUser.username} (${currentUser.role.toUpperCase()})`;
-              loadAppointments();
-            }
-
-            async function loadAppointments() {
-              const tbody = document.getElementById('appointmentsTable');
-              try {
-                const res = await fetch('/api/v1/crm/appointments', {
-                  headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
-
-                if (res.status === 401 || res.status === 403) {
-                  logout();
-                  return;
+                        select.innerHTML = '<option value="">-- Выберите услугу --</option>';
+                        services.forEach(s => {
+                            select.innerHTML += `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`;
+                        });
+                    } catch (err) {
+                        console.error('Ошибка загрузки услуг:', err);
+                    }
                 }
 
-                const appointments = await res.json();
-                tbody.innerHTML = '';
+                // 2. Изменение услуги -> Загрузка мастеров
+                async function handleServiceChange() {
+                    const serviceId = document.getElementById('serviceSelect').value;
+                    const masterSelect = document.getElementById('masterSelect');
+                    const dateInput = document.getElementById('dateInput');
 
-                if (appointments.length === 0) {
-                  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей пока нет</td></tr>';
-                  return;
+                    selectedSlot = null;
+                    document.getElementById('slotsContainer').innerHTML = `
+                        <div class="slots-empty-state">
+                            Выберите мастера и дату для отображения доступных слотов
+                        </div>`;
+
+                    if (!serviceId) {
+                        masterSelect.innerHTML = '<option value="">-- Сначала выберите услугу --</option>';
+                        masterSelect.disabled = true;
+                        dateInput.disabled = true;
+                        return;
+                    }
+
+                    masterSelect.innerHTML = '<option value="">Загрузка мастеров...</option>';
+                    masterSelect.disabled = true;
+
+                    try {
+                        const res = await fetch(`/api/v1/masters?service_id=${serviceId}`);
+                        const masters = await res.json();
+
+                        if (masters.length === 0) {
+                            masterSelect.innerHTML = '<option value="">Нет мастеров для этой услуги</option>';
+                            return;
+                        }
+
+                        masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
+                        masters.forEach(m => {
+                            masterSelect.innerHTML += `<option value="${m.id}">${m.name} (${m.role}) — ⭐ ${m.rating}</option>`;
+                        });
+
+                        masterSelect.disabled = false;
+                        dateInput.disabled = false;
+                    } catch (err) {
+                        console.error('Ошибка загрузки мастеров:', err);
+                    }
                 }
 
-                appointments.forEach(app => {
-                  const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-                  const deleteBtn = currentUser.role === 'admin'
-                    ? `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Удалить</button>`
-                    : `<span style="color: var(--text-muted); font-size: 0.8rem;">Только чтение</span>`;
+                // 3. Загрузка свободных слотов
+                async function handleMasterOrDateChange() {
+                    const masterId = document.getElementById('masterSelect').value;
+                    const date = document.getElementById('dateInput').value;
+                    const container = document.getElementById('slotsContainer');
 
-                  tbody.innerHTML += `
-                    <tr>
-                      <td><strong>#${app.id}</strong></td>
-                      <td>${dateStr} <span style="color: var(--text-muted);">в</span> ${app.booking_time}</td>
-                      <td><strong>${app.client_name}</strong></td>
-                      <td>${app.client_phone}</td>
-                      <td>${app.service_name || '-'}</td>
-                      <td>${app.master_name || '-'}</td>
-                      <td>${deleteBtn}</td>
-                    </tr>
-                  `;
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки записей:', err);
-              }
-            }
+                    selectedSlot = null;
 
-            async function deleteAppointment(id) {
-              if (!confirm(`Вы действительно хотите удалить запись #${id}?`)) return;
+                    if (!masterId || !date) return;
 
-              try {
-                const res = await fetch(`/api/v1/crm/appointments/${id}`, {
-                  method: 'DELETE',
-                  headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
+                    container.innerHTML = '<div class="slots-empty-state">Загрузка свободных слотов...</div>';
 
-                if (res.ok) {
-                  loadAppointments();
-                } else {
-                  alert('Не удалось удалить запись');
+                    try {
+                        const res = await fetch(`/api/v1/available-slots?date=${date}&master_id=${masterId}`);
+                        const data = await res.json();
+
+                        container.innerHTML = '';
+                        if (!data.slots || data.slots.length === 0) {
+                            container.innerHTML = '<div class="slots-empty-state" style="color: var(--danger);">Нет свободных слотов на выбранную дату</div>';
+                            return;
+                        }
+
+                        data.slots.forEach(slot => {
+                            const btn = document.createElement('div');
+                            btn.className = 'slot-btn';
+                            btn.textContent = slot;
+                            btn.onclick = () => {
+                                document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                                btn.classList.add('selected');
+                                selectedSlot = slot;
+                            };
+                            container.appendChild(btn);
+                        });
+                    } catch (err) {
+                        console.error('Ошибка загрузки слотов:', err);
+                    }
                 }
-              } catch (err) {
-                console.error('Ошибка удаления:', err);
-              }
-            }
 
-            function logout() {
-              jwtToken = null;
-              currentUser = null;
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-              document.getElementById('loginCard').style.display = 'block';
-              document.getElementById('dashboardCard').style.display = 'none';
-            }
+                // 4. Отправка формы записи
+                async function handleBookingSubmit(event) {
+                    event.preventDefault();
+                    const alert = document.getElementById('bookingAlert');
+
+                    if (!selectedSlot) {
+                        alert.className = 'alert alert-error';
+                        alert.textContent = '⚠ Пожалуйста, выберите удобное время записи!';
+                        alert.style.display = 'block';
+                        return;
+                    }
+
+                    const body = {
+                        service_id: document.getElementById('serviceSelect').value,
+                        master_id: document.getElementById('masterSelect').value,
+                        date: document.getElementById('dateInput').value,
+                        slot_time: selectedSlot,
+                        client_name: document.getElementById('clientName').value,
+                        client_phone: document.getElementById('clientPhone').value,
+                        user_id: currentUser ? currentUser.id : null
+                    };
+
+                    try {
+                        const headers = { 'Content-Type': 'application/json' };
+                        if (jwtToken) headers['Authorization'] = `Bearer ${jwtToken}`;
+
+                        const res = await fetch('/api/v1/bookings', {
+                            method: 'POST',
+                            headers: headers,
+                            body: JSON.stringify(body)
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            alert.className = 'alert alert-success';
+                            alert.textContent = '🎉 Вы успешно записаны! Ждем вас в салоне.';
+                            alert.style.display = 'block';
+                            document.getElementById('bookingForm').reset();
+                            handleServiceChange();
+                            autoFillClientIfLoggedIn();
+                        } else {
+                            alert.className = 'alert alert-error';
+                            alert.textContent = data.error || 'Ошибка при формировании записи';
+                            alert.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert.className = 'alert alert-error';
+                        alert.textContent = 'Ошибка связи с сервером';
+                        alert.style.display = 'block';
+                    }
+                }
+
+                // ==========================================
+                // ЛОГИКА АВТОРИЗАЦИИ И РЕГИСТРАЦИИ ПОЛЬЗОВАТЕЛЕЙ
+                // ==========================================
+
+                function toggleAuthMode(mode) {
+                    const loginForm = document.getElementById('loginForm');
+                    const registerForm = document.getElementById('registerForm');
+                    const title = document.getElementById('authTitle');
+                    const subtitle = document.getElementById('authSubtitle');
+                    document.getElementById('loginAlert').style.display = 'none';
+
+                    if (mode === 'register') {
+                        loginForm.style.display = 'none';
+                        registerForm.style.display = 'block';
+                        title.textContent = 'Регистрация клиента';
+                        subtitle.textContent = 'Создайте аккаунт для отслеживания ваших записей';
+                    } else {
+                        registerForm.style.display = 'none';
+                        loginForm.style.display = 'block';
+                        title.textContent = 'Вход в систему';
+                        subtitle.textContent = 'Войдите как клиент, мастер или администратор';
+                    }
+                }
+
+                // Вход
+                async function handleLoginSubmit(event) {
+                    event.preventDefault();
+                    const alert = document.getElementById('loginAlert');
+                    const username = document.getElementById('username').value;
+                    const password = document.getElementById('password').value;
+
+                    try {
+                        const res = await fetch('/api/v1/auth/login', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ username, password })
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            jwtToken = data.token;
+                            currentUser = data.user;
+                            localStorage.setItem('token', jwtToken);
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            showDashboard();
+                        } else {
+                            alert.className = 'alert alert-error';
+                            alert.textContent = data.error || 'Неверное имя пользователя или пароль';
+                            alert.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert.className = 'alert alert-error';
+                        alert.textContent = 'Ошибка авторизации';
+                        alert.style.display = 'block';
+                    }
+                }
+
+                // Регистрация клиента
+                async function handleRegisterSubmit(event) {
+                    event.preventDefault();
+                    const alert = document.getElementById('loginAlert');
+
+                    const body = {
+                        name: document.getElementById('regName').value,
+                        username: document.getElementById('regUsername').value,
+                        phone: document.getElementById('regPhone').value,
+                        password: document.getElementById('regPassword').value,
+                        role: 'user'
+                    };
+
+                    try {
+                        const res = await fetch('/api/v1/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body)
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            jwtToken = data.token;
+                            currentUser = data.user;
+                            localStorage.setItem('token', jwtToken);
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            showDashboard();
+                        } else {
+                            alert.className = 'alert alert-error';
+                            alert.textContent = data.error || 'Ошибка при регистрации';
+                            alert.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert.className = 'alert alert-error';
+                        alert.textContent = 'Ошибка связи с сервером';
+                        alert.style.display = 'block';
+                    }
+                }
+
+                // Демо-кнопки быстрого входа
+                function quickLogin(role) {
+                    const credentials = {
+                        user: { username: 'client_anna', password: 'user123' },
+                        master: { username: 'master_elena', password: 'master123' },
+                        admin: { username: 'admin', password: 'admin123' }
+                    };
+
+                    document.getElementById('username').value = credentials[role].username;
+                    document.getElementById('password').value = credentials[role].password;
+                    document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+                }
+
+                function checkAuth() {
+                    const userStr = localStorage.getItem('user');
+                    if (jwtToken && userStr) {
+                        currentUser = JSON.parse(userStr);
+                        showDashboard();
+                    } else {
+                        document.getElementById('loginCard').style.display = 'block';
+                        document.getElementById('dashboardCard').style.display = 'none';
+                    }
+                }
+
+                function showDashboard() {
+                    document.getElementById('loginCard').style.display = 'none';
+                    document.getElementById('dashboardCard').style.display = 'block';
+
+                    const badgeElement = document.getElementById('userInfo');
+                    const titleElement = document.getElementById('dashboardTitle');
+
+                    // Настройка отображения интерфейса под роль
+                    if (currentUser.role === 'admin') {
+                        titleElement.textContent = 'Панель управления (CRM)';
+                        badgeElement.className = 'badge badge-admin';
+                        badgeElement.textContent = `Администратор: ${currentUser.username}`;
+                    } else if (currentUser.role === 'master') {
+                        titleElement.textContent = 'Журнал записей мастера';
+                        badgeElement.className = 'badge badge-master';
+                        badgeElement.textContent = `Мастер: ${currentUser.name || currentUser.username}`;
+                    } else {
+                        titleElement.textContent = 'Мои записи';
+                        badgeElement.className = 'badge badge-user';
+                        badgeElement.textContent = `Клиент: ${currentUser.name || currentUser.username}`;
+                    }
+
+                    autoFillClientIfLoggedIn();
+                    loadAppointments();
+                }
+
+                // Загрузка записей с учетом роли
+                async function loadAppointments() {
+                    const tbody = document.getElementById('appointmentsTable');
+                    try {
+                        const res = await fetch('/api/v1/crm/appointments', {
+                            headers: { 'Authorization': `Bearer ${jwtToken}` }
+                        });
+
+                        if (res.status === 401 || res.status === 403) {
+                            logout();
+                            return;
+                        }
+
+                        const appointments = await res.json();
+                        tbody.innerHTML = '';
+
+                        if (!appointments || appointments.length === 0) {
+                            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей пока нет</td></tr>';
+                            return;
+                        }
+
+                        appointments.forEach(app => {
+                            const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
+
+                            // Права на удаление / отмену:
+                            // Администратор может удалять любые записи, Клиент — только отменять свои
+                            let actionButton = `<span style="color: var(--text-muted); font-size: 0.8rem;">Нет действий</span>`;
+                            if (currentUser.role === 'admin') {
+                                actionButton = `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Удалить</button>`;
+                            } else if (currentUser.role === 'user') {
+                                actionButton = `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Отменить</button>`;
+                            }
+
+                            tbody.innerHTML += `
+                                <tr>
+                                    <td><strong>#${app.id}</strong></td>
+                                    <td>${dateStr} <span style="color: var(--text-muted);">в</span> ${app.booking_time}</td>
+                                    <td><strong>${app.client_name}</strong></td>
+                                    <td>${app.client_phone}</td>
+                                    <td>${app.service_name || '-'}</td>
+                                    <td>${app.master_name || '-'}</td>
+                                    <td>${actionButton}</td>
+                                </tr>
+                            `;
+                        });
+                    } catch (err) {
+                        console.error('Ошибка загрузки записей:', err);
+                    }
+                }
+
+                // Отмена/Удаление записи
+                async function deleteAppointment(id) {
+                    const confirmMsg = currentUser.role === 'admin'
+                        ? `Вы действительно хотите удалить запись #${id}?`
+                        : `Вы действительно хотите отменить вашу запись #${id}?`;
+
+                    if (!confirm(confirmMsg)) return;
+
+                    try {
+                        const res = await fetch(`/api/v1/crm/appointments/${id}`, {
+                            method: 'DELETE',
+                            headers: { 'Authorization': `Bearer ${jwtToken}` }
+                        });
+
+                        if (res.ok) {
+                            loadAppointments();
+                        } else {
+                            alert('Не удалось отменить запись');
+                        }
+                    } catch (err) {
+                        console.error('Ошибка отмены:', err);
+                    }
+                }
+
+                // Выход из системы
+                function logout() {
+                    jwtToken = null;
+                    currentUser = null;
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                    toggleAuthMode('login');
+                    document.getElementById('loginCard').style.display = 'block';
+                    document.getElementById('dashboardCard').style.display = 'none';
+                }
     </script>
 </body>
 </html>
