@@ -448,8 +448,8 @@
                     document.getElementById('username').value = credentials[role].username;
                     document.getElementById('password').value = credentials[role].password;
 
-                    const event = new Event('submit', { cancelable: true });
-                    document.getElementById('loginForm').dispatchEvent(event);
+                    // Fixed: Directly invoke handleLogin instead of dispatching a synthetic submit event
+                    handleLogin({ preventDefault: () => {} });
                 }
 
                 function routeToRoleView(role) {
