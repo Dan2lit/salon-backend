@@ -3,57 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow & Co. — Премиум Салон & CRM</title>
+    <title>Glow & Co. — CRM Calendar</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --primary-light: #eeef2e;
-            --primary-subtle: #e0e7ff;
-            --bg: #f8fafc;
+            --bg-main: #f5f6fa;
             --card-bg: #ffffff;
-            --text: #0f172a;
-            --text-muted: #64748b;
-            --border: #e2e8f0;
-            --success: #10b981;
-            --success-bg: #d1fae5;
-            --danger: #ef4444;
-            --danger-bg: #fee2e2;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 25px -5px rgb(99 102 241 / 0.08), 0 8px 10px -6px rgb(0 0 0 / 0.01);
+            --primary: #8b5cf6;
+            --primary-light: #f3e8ff;
+            --primary-hover: #7c3aed;
+            --text-main: #1e1e24;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+            --accent-pink: #ff4d8d;
+            --accent-pink-light: #ffe5ee;
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 20px;
+            --shadow-card: 0 10px 30px rgba(139, 92, 246, 0.05);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         body {
-            background-color: var(--bg);
-            background-image: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%), radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.04) 0px, transparent 50%);
-            color: var(--text);
+            background-color: var(--bg-main);
+            color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            -webkit-font-smoothing: antialiased;
         }
 
-        /* HEADER & NAVIGATION */
+        /* HEADER */
         header {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-            padding: 1.1rem 2rem;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 2.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -63,770 +54,401 @@
         }
 
         .logo {
-            font-size: 1.35rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4f46e5 0%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            letter-spacing: -0.02em;
         }
 
         nav {
-            display: flex;
-            background: #f1f5f9;
+            background: #f1f2f6;
             padding: 4px;
-            border-radius: 9999px;
-            gap: 2px;
+            border-radius: 30px;
+            display: flex;
+            gap: 4px;
         }
 
         .nav-btn {
-            padding: 0.55rem 1.25rem;
-            border-radius: 9999px;
+            padding: 0.5rem 1.25rem;
+            border-radius: 20px;
             border: none;
             background: transparent;
             color: var(--text-muted);
             cursor: pointer;
             font-weight: 600;
             font-size: 0.875rem;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.2s ease;
         }
-
-            .nav-btn:hover {
-                color: var(--text);
-            }
 
             .nav-btn.active {
                 background: var(--card-bg);
                 color: var(--primary);
-                box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             }
 
         /* MAIN CONTAINER */
         main {
             flex: 1;
-            max-width: 860px;
+            max-width: 1100px;
             width: 100%;
-            margin: 2.5rem auto;
-            padding: 0 1.25rem;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
         }
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
             .tab-content.active {
                 display: block;
             }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(6px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* CARDS */
         .card {
             background: var(--card-bg);
             border-radius: var(--radius-lg);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-            padding: 2.25rem;
-            box-shadow: var(--shadow-lg);
-            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+            padding: 2rem;
+            box-shadow: var(--shadow-card);
         }
 
-        .card-title {
-            font-size: 1.4rem;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            color: var(--text);
-            margin-bottom: 0.35rem;
-        }
-
-        .card-subtitle {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 1.75rem;
-        }
-
-        /* FORM STYLES */
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .step-label {
+        /* CALENDAR CONTROL HEADER */
+        .calendar-controls {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.5rem;
-            font-size: 0.9rem;
-            font-weight: 700;
-            margin-bottom: 0.6rem;
-            color: var(--text);
-        }
-
-        .step-number {
-            background: var(--primary-subtle);
-            color: var(--primary);
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 800;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1.5px solid var(--border);
-            border-radius: var(--radius-md);
-            font-size: 0.95rem;
-            color: var(--text);
-            background-color: #fff;
-            outline: none;
-            transition: all 0.2s ease;
-        }
-
-            select:focus, input:focus {
-                border-color: var(--primary);
-                box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
-            }
-
-            select:disabled, input:disabled {
-                background-color: #f8fafc;
-                color: #94a3b8;
-                cursor: not-allowed;
-            }
-
-        /* SLOTS GRID */
-        .slots-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-            gap: 0.6rem;
-            margin-top: 0.5rem;
-        }
-
-        .slot-btn {
-            padding: 0.7rem 0.5rem;
-            border: 1.5px solid var(--border);
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            cursor: pointer;
-            text-align: center;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-            .slot-btn:hover {
-                border-color: var(--primary);
-                background: rgba(99, 102, 241, 0.02);
-                transform: translateY(-1px);
-            }
-
-            .slot-btn.selected {
-                background: var(--primary);
-                color: white;
-                border-color: var(--primary);
-                box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
-            }
-
-        .slots-empty-state {
-            grid-column: 1 / -1;
-            padding: 1.25rem;
-            background: var(--bg);
-            border-radius: var(--radius-md);
-            border: 1px dashed var(--border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.875rem;
-        }
-
-        /* BUTTONS */
-        .btn {
-            width: 100%;
-            padding: 0.9rem 1.5rem;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-size: 0.95rem;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-            .btn:hover {
-                transform: translateY(-1px);
-                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
-            }
-
-            .btn:active {
-                transform: translateY(0);
-            }
-
-        .btn-danger {
-            background: var(--danger-bg);
-            color: var(--danger);
-            box-shadow: none;
-            padding: 0.45rem 0.85rem;
-            font-size: 0.8rem;
-            border-radius: var(--radius-sm);
-        }
-
-            .btn-danger:hover {
-                background: var(--danger);
-                color: white;
-                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
-            }
-
-        /* TABLES & BADGES */
-        .table-container {
-            overflow-x: auto;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border);
-            margin-top: 1rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-        }
-
-        th, td {
-            padding: 0.9rem 1rem;
-            text-align: left;
-            font-size: 0.875rem;
-            border-bottom: 1px solid var(--border);
-        }
-
-        th {
-            background: var(--bg);
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.05em;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.35rem;
-            padding: 0.25rem 0.65rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            background: var(--primary-subtle);
-            color: var(--primary);
-        }
-
-        /* ALERTS */
-        .alert {
-            padding: 0.9rem 1.1rem;
-            border-radius: var(--radius-md);
-            margin-bottom: 1.25rem;
-            font-size: 0.875rem;
-            font-weight: 600;
-            display: none;
-            animation: fadeIn 0.2s ease;
-        }
-
-        .alert-success {
-            background: var(--success-bg);
-            color: #065f46;
-            border: 1px solid #a7f3d0;
-        }
-
-        .alert-error {
-            background: var(--danger-bg);
-            color: #991b1b;
-            border: 1px solid #fecaca;
-        }
-
-        /* CLIENT INPUTS CONTAINER */
-        .client-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
             gap: 1rem;
         }
 
-        @media (max-width: 640px) {
-            .client-grid {
-                grid-template-columns: 1fr;
-            }
-
-            header {
-                padding: 1rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-            }
+        .cal-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
+
+        .cal-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+        }
+
+        .cal-nav-btns {
+            display: flex;
+            gap: 0.25rem;
+        }
+
+        .cal-btn {
+            background: #f3f4f6;
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.8rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-main);
+            transition: background 0.15s ease;
+        }
+
+            .cal-btn:hover {
+                background: #e5e7eb;
+            }
+
+        .user-pill {
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.35rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* CALENDAR GRID */
+        .calendar-grid-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            overflow-x: auto;
+            background: var(--card-bg);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: 80px repeat(7, minmax(110px, 1fr));
+            min-width: 800px;
+        }
+
+        .cal-header-cell {
+            padding: 0.85rem 0.5rem;
+            text-align: center;
+            background: #f9fafb;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            text-transform: uppercase;
+        }
+
+            .cal-header-cell.today {
+                color: var(--primary);
+                background: var(--primary-light);
+            }
+
+        .time-col {
+            background: #f9fafb;
+            border-right: 1px solid var(--border-color);
+        }
+
+        .time-slot-label {
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .day-col {
+            border-right: 1px solid var(--border-color);
+            position: relative;
+        }
+
+            .day-col:last-child {
+                border-right: none;
+            }
+
+        .day-slot-cell {
+            height: 60px;
+            border-bottom: 1px dashed #f0f0f0;
+            position: relative;
+        }
+
+        /* BOOKING EVENT CARDS INSIDE CALENDAR */
+        .booking-card {
+            position: absolute;
+            left: 4px;
+            right: 4px;
+            top: 4px;
+            bottom: 4px;
+            background: var(--primary-light);
+            border-left: 3px solid var(--primary);
+            border-radius: 6px;
+            padding: 0.4rem 0.5rem;
+            font-size: 0.75rem;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.15s ease;
+            cursor: pointer;
+        }
+
+            .booking-card:hover {
+                transform: scale(1.02);
+                z-index: 10;
+            }
+
+        .booking-time {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .booking-client {
+            font-weight: 600;
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .booking-service {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn-logout {
+            background: var(--accent-pink-light);
+            color: var(--accent-pink);
+            border: none;
+            padding: 0.4rem 0.85rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+            .btn-logout:hover {
+                background: var(--accent-pink);
+                color: #fff;
+            }
     </style>
 </head>
 <body>
 
     <header>
         <div class="logo">
-            <span>✨</span> Glow & Co.
+            <span>✦</span> Glow & Co.
         </div>
         <nav>
-            <button class="nav-btn active" onclick="switchTab('bookingTab', event)">Виджет Записи</button>
-            <button class="nav-btn" onclick="switchTab('crmTab', event)">Панель CRM</button>
+            <button class="nav-btn" onclick="switchTab('bookingTab', event)">Виджет Записи</button>
+            <button class="nav-btn active" onclick="switchTab('crmTab', event)">Панель CRM</button>
         </nav>
     </header>
 
     <main>
-        <!-- ВИДЖЕТ ЗАПИСИ -->
-        <div id="bookingTab" class="tab-content active">
+        <!-- CRM PANE WITH CALENDAR TIMETABLE VIEW -->
+        <div id="crmTab" class="tab-content active">
             <div class="card">
-                <h1 class="card-title">Онлайн-запись</h1>
-                <p class="card-subtitle">Выберите подходящую услугу, мастера и время для посещения</p>
 
-                <div id="bookingAlert" class="alert"></div>
-
-                <form id="bookingForm" onsubmit="handleBookingSubmit(event)">
-                    <!-- 1. Выбор услуги -->
-                    <div class="form-group">
-                        <label for="serviceSelect" class="step-label">
-                            <span class="step-number">1</span> Выберите услугу
-                        </label>
-                        <select id="serviceSelect" onchange="handleServiceChange()" required>
-                            <option value="">-- Загрузка услуг... --</option>
-                        </select>
+                <!-- CALENDAR CONTROLS -->
+                <div class="calendar-controls">
+                    <div class="cal-title-group">
+                        <h1 class="cal-title">Расписание записей</h1>
+                        <span class="user-pill">Пользователь: admin (ADMIN)</span>
                     </div>
 
-                    <!-- 2. Выбор мастера -->
-                    <div class="form-group">
-                        <label for="masterSelect" class="step-label">
-                            <span class="step-number">2</span> Выберите мастера
-                        </label>
-                        <select id="masterSelect" onchange="handleMasterOrDateChange()" disabled required>
-                            <option value="">-- Сначала выберите услугу --</option>
-                        </select>
-                    </div>
-
-                    <!-- 3. Выбор даты -->
-                    <div class="form-group">
-                        <label for="dateInput" class="step-label">
-                            <span class="step-number">3</span> Выберите дату
-                        </label>
-                        <input type="date" id="dateInput" onchange="handleMasterOrDateChange()" disabled required>
-                    </div>
-
-                    <!-- 4. Выбор времени -->
-                    <div class="form-group">
-                        <label class="step-label">
-                            <span class="step-number">4</span> Выберите время
-                        </label>
-                        <div id="slotsContainer" class="slots-grid">
-                            <div class="slots-empty-state">
-                                Выберите мастера и дату для отображения доступных слотов
-                            </div>
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                        <div class="cal-nav-btns">
+                            <button class="cal-btn">&lt;</button>
+                            <button class="cal-btn">Сегодня</button>
+                            <button class="cal-btn">&gt;</button>
                         </div>
+                        <button class="btn-logout" onclick="alert('Выход из системы')">Выйти</button>
                     </div>
-
-                    <!-- 5. Данные клиента -->
-                    <div class="form-group">
-                        <label class="step-label">
-                            <span class="step-number">5</span> Ваши данные
-                        </label>
-                        <div class="client-grid">
-                            <div>
-                                <input type="text" id="clientName" placeholder="Ваше имя" required>
-                            </div>
-                            <div>
-                                <input type="tel" id="clientPhone" placeholder="+7 (999) 000-00-00" required>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn" style="margin-top: 1rem;">
-                        Подтвердить запись
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- CRM ПАНЕЛЬ -->
-        <div id="crmTab" class="tab-content">
-            <!-- ЭКРАН ЛОГИНА -->
-            <div id="loginCard" class="card" style="max-width: 420px; margin: 2rem auto;">
-                <h1 class="card-title">Вход в CRM</h1>
-                <p class="card-subtitle">Введите учетные данные для управления записями</p>
-
-                <div id="loginAlert" class="alert"></div>
-
-                <form onsubmit="handleLoginSubmit(event)">
-                    <div class="form-group">
-                        <label for="username" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Логин</label>
-                        <input type="text" id="username" placeholder="admin или master1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password" style="font-size: 0.85rem; font-weight: 600; margin-bottom: 0.35rem; display: block;">Пароль</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn">Войти в систему</button>
-                </form>
-            </div>
-
-            <!-- ЭКРАН ДАШБОРДА CRM -->
-            <div id="dashboardCard" class="card" style="display: none;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
-                    <div>
-                        <h1 class="card-title">Журнал записей</h1>
-                        <span id="userInfo" class="badge" style="margin-top: 0.35rem;">Роль: Guest</span>
-                    </div>
-                    <button class="btn btn-danger" style="width: auto;" onclick="logout()">Выйти</button>
                 </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Дата и Время</th>
-                                <th>Клиент</th>
-                                <th>Телефон</th>
-                                <th>Услуга</th>
-                                <th>Мастер</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appointmentsTable">
-                            <tr>
-                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Загрузка записей...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- WEEKLY CALENDAR TIMETABLE -->
+                <div class="calendar-grid-container">
+                    <div class="calendar-grid">
+
+                        <!-- HEADER ROW (Time + Days) -->
+                        <div class="cal-header-cell">Время</div>
+                        <div class="cal-header-cell">Пн, 28 Сен</div>
+                        <div class="cal-header-cell">Вт, 29 Сен</div>
+                        <div class="cal-header-cell today">Ср, 30 Сен</div>
+                        <div class="cal-header-cell">Чт, 01 Окт</div>
+                        <div class="cal-header-cell">Пт, 02 Окт</div>
+                        <div class="cal-header-cell">Сб, 03 Окт</div>
+                        <div class="cal-header-cell">Вс, 04 Окт</div>
+
+                        <!-- TIME ROW: 09:00 -->
+                        <div class="time-col">
+                            <div class="time-slot-label">09:00</div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col">
+                            <div class="day-slot-cell">
+                                <div class="booking-card">
+                                    <div class="booking-time">09:00</div>
+                                    <div class="booking-client">Анна К.</div>
+                                    <div class="booking-service">Стрижка & Укладка</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+
+                        <!-- TIME ROW: 11:00 -->
+                        <div class="time-col">
+                            <div class="time-slot-label">11:00</div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col">
+                            <div class="day-slot-cell">
+                                <div class="booking-card" style="border-color: #ec4899; background: #fce7f3;">
+                                    <div class="booking-time" style="color: #be185d;">11:00</div>
+                                    <div class="booking-client">Елена М.</div>
+                                    <div class="booking-service">Окрашивание</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+
+                        <!-- TIME ROW: 13:00 -->
+                        <div class="time-col">
+                            <div class="time-slot-label">13:00</div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col">
+                            <div class="day-slot-cell">
+                                <div class="booking-card">
+                                    <div class="booking-time">13:00</div>
+                                    <div class="booking-client">Мария С.</div>
+                                    <div class="booking-service">Маникюр</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+
+                        <!-- TIME ROW: 15:00 -->
+                        <div class="time-col">
+                            <div class="time-slot-label">15:00</div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col">
+                            <div class="day-slot-cell">
+                                <div class="booking-card">
+                                    <div class="booking-time">15:00</div>
+                                    <div class="booking-client">Дмитрий И.</div>
+                                    <div class="booking-service">Мужская стрижка</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col">
+                            <div class="day-slot-cell">
+                                <div class="booking-card">
+                                    <div class="booking-time">15:00</div>
+                                    <div class="booking-client">Ольга В.</div>
+                                    <div class="booking-service">Укладка</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+
+                        <!-- TIME ROW: 17:00 -->
+                        <div class="time-col">
+                            <div class="time-slot-label">17:00</div>
+                        </div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+                        <div class="day-col"><div class="day-slot-cell"></div></div>
+
+                    </div>
                 </div>
+
             </div>
         </div>
     </main>
 
     <script>
-            let selectedSlot = null;
-            let currentUser = null;
-            let jwtToken = localStorage.getItem('token');
-
-            // Переключение вкладок
             function switchTab(tabId, event) {
-              document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-              document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-
-              document.getElementById(tabId).classList.add('active');
-              if (event) {
-                event.target.classList.add('active');
-              }
-
-              if (tabId === 'crmTab' && jwtToken) {
-                checkAuth();
-              }
-            }
-
-            // Инициализация при загрузке
-            document.addEventListener('DOMContentLoaded', () => {
-              const dateInput = document.getElementById('dateInput');
-              const today = new Date().toISOString().split('T')[0];
-              dateInput.min = today;
-              dateInput.value = today;
-
-              loadServices();
-            });
-
-            // 1. Загрузка услуг
-            async function loadServices() {
-              try {
-                const res = await fetch('/api/v1/services');
-                const services = await res.json();
-                const select = document.getElementById('serviceSelect');
-
-                select.innerHTML = '<option value="">-- Выберите услугу --</option>';
-                services.forEach(s => {
-                  select.innerHTML += `<option value="${s.id}">${s.name} — ${s.price} ₽ (${s.duration_minutes} мин)</option>`;
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки услуг:', err);
-              }
-            }
-
-            // 2. Изменение услуги -> Загрузка мастеров
-            async function handleServiceChange() {
-              const serviceId = document.getElementById('serviceSelect').value;
-              const masterSelect = document.getElementById('masterSelect');
-              const dateInput = document.getElementById('dateInput');
-
-              selectedSlot = null;
-              document.getElementById('slotsContainer').innerHTML = `
-                <div class="slots-empty-state">
-                  Выберите мастера и дату для отображения доступных слотов
-                </div>`;
-
-              if (!serviceId) {
-                masterSelect.innerHTML = '<option value="">-- Сначала выберите услугу --</option>';
-                masterSelect.disabled = true;
-                dateInput.disabled = true;
-                return;
-              }
-
-              masterSelect.innerHTML = '<option value="">Загрузка мастеров...</option>';
-              masterSelect.disabled = true;
-
-              try {
-                const res = await fetch(`/api/v1/masters?service_id=${serviceId}`);
-                const masters = await res.json();
-
-                if (masters.length === 0) {
-                  masterSelect.innerHTML = '<option value="">Нет мастеров для этой услуги</option>';
-                  return;
-                }
-
-                masterSelect.innerHTML = '<option value="">-- Выберите мастера --</option>';
-                masters.forEach(m => {
-                  masterSelect.innerHTML += `<option value="${m.id}">${m.name} (${m.role}) — ⭐ ${m.rating}</option>`;
-                });
-
-                masterSelect.disabled = false;
-                dateInput.disabled = false;
-              } catch (err) {
-                console.error('Ошибка загрузки мастеров:', err);
-              }
-            }
-
-            // 3. Загрузка свободных слотов
-            async function handleMasterOrDateChange() {
-              const masterId = document.getElementById('masterSelect').value;
-              const date = document.getElementById('dateInput').value;
-              const container = document.getElementById('slotsContainer');
-
-              selectedSlot = null;
-
-              if (!masterId || !date) return;
-
-              container.innerHTML = '<div class="slots-empty-state">Загрузка свободных слотов...</div>';
-
-              try {
-                const res = await fetch(`/api/v1/available-slots?date=${date}&master_id=${masterId}`);
-                const data = await res.json();
-
-                container.innerHTML = '';
-                if (!data.slots || data.slots.length === 0) {
-                  container.innerHTML = '<div class="slots-empty-state" style="color: var(--danger);">Нет свободных слотов на выбранную дату</div>';
-                  return;
-                }
-
-                data.slots.forEach(slot => {
-                  const btn = document.createElement('div');
-                  btn.className = 'slot-btn';
-                  btn.textContent = slot;
-                  btn.onclick = () => {
-                    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-                    btn.classList.add('selected');
-                    selectedSlot = slot;
-                  };
-                  container.appendChild(btn);
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки слотов:', err);
-              }
-            }
-
-            // 4. Отправка формы записи
-            async function handleBookingSubmit(event) {
-              event.preventDefault();
-              const alert = document.getElementById('bookingAlert');
-
-              if (!selectedSlot) {
-                alert.className = 'alert alert-error';
-                alert.textContent = '⚠️️ Пожалуйста, выберите удобное время записи!';
-                alert.style.display = 'block';
-                return;
-              }
-
-              const body = {
-                service_id: document.getElementById('serviceSelect').value,
-                master_id: document.getElementById('masterSelect').value,
-                date: document.getElementById('dateInput').value,
-                slot_time: selectedSlot,
-                client_name: document.getElementById('clientName').value,
-                client_phone: document.getElementById('clientPhone').value
-              };
-
-              try {
-                const res = await fetch('/api/v1/bookings', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(body)
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                  alert.className = 'alert alert-success';
-                  alert.textContent = '🎉 Вы успешно записаны! Ждем вас в салоне.';
-                  alert.style.display = 'block';
-                  document.getElementById('bookingForm').reset();
-                  handleServiceChange();
-                } else {
-                  alert.className = 'alert alert-error';
-                  alert.textContent = data.error || 'Ошибка при формировании записи';
-                  alert.style.display = 'block';
-                }
-              } catch (err) {
-                alert.className = 'alert alert-error';
-                alert.textContent = 'Ошибка связи с сервером';
-                alert.style.display = 'block';
-              }
-            }
-
-            // ==========================================
-            // ЛОГИКА CRM И АВТОРИЗАЦИИ
-            // ==========================================
-
-            async function handleLoginSubmit(event) {
-              event.preventDefault();
-              const alert = document.getElementById('loginAlert');
-              const username = document.getElementById('username').value;
-              const password = document.getElementById('password').value;
-
-              try {
-                const res = await fetch('/api/v1/auth/login', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ username, password })
-                });
-
-                const data = await res.json();
-
-                if (res.ok) {
-                  jwtToken = data.token;
-                  currentUser = data.user;
-                  localStorage.setItem('token', jwtToken);
-                  localStorage.setItem('user', JSON.stringify(currentUser));
-                  showDashboard();
-                } else {
-                  alert.className = 'alert alert-error';
-                  alert.textContent = data.error || 'Неверное имя пользователя или пароль';
-                  alert.style.display = 'block';
-                }
-              } catch (err) {
-                alert.className = 'alert alert-error';
-                alert.textContent = 'Ошибка авторизации';
-                alert.style.display = 'block';
-              }
-            }
-
-            function checkAuth() {
-              const userStr = localStorage.getItem('user');
-              if (jwtToken && userStr) {
-                currentUser = JSON.parse(userStr);
-                showDashboard();
-              } else {
-                document.getElementById('loginCard').style.display = 'block';
-                document.getElementById('dashboardCard').style.display = 'none';
-              }
-            }
-
-            function showDashboard() {
-              document.getElementById('loginCard').style.display = 'none';
-              document.getElementById('dashboardCard').style.display = 'block';
-              document.getElementById('userInfo').textContent = `Пользователь: ${currentUser.username} (${currentUser.role.toUpperCase()})`;
-              loadAppointments();
-            }
-
-            async function loadAppointments() {
-              const tbody = document.getElementById('appointmentsTable');
-              try {
-                const res = await fetch('/api/v1/crm/appointments', {
-                  headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
-
-                if (res.status === 401 || res.status === 403) {
-                  logout();
-                  return;
-                }
-
-                const appointments = await res.json();
-                tbody.innerHTML = '';
-
-                if (appointments.length === 0) {
-                  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Записей пока нет</td></tr>';
-                  return;
-                }
-
-                appointments.forEach(app => {
-                  const dateStr = new Date(app.booking_date).toLocaleDateString('ru-RU');
-                  const deleteBtn = currentUser.role === 'admin'
-                    ? `<button class="btn btn-danger" onclick="deleteAppointment(${app.id})">Удалить</button>`
-                    : `<span style="color: var(--text-muted); font-size: 0.8rem;">Только чтение</span>`;
-
-                  tbody.innerHTML += `
-                    <tr>
-                      <td><strong>#${app.id}</strong></td>
-                      <td>${dateStr} <span style="color: var(--text-muted);">в</span> ${app.booking_time}</td>
-                      <td><strong>${app.client_name}</strong></td>
-                      <td>${app.client_phone}</td>
-                      <td>${app.service_name || '-'}</td>
-                      <td>${app.master_name || '-'}</td>
-                      <td>${deleteBtn}</td>
-                    </tr>
-                  `;
-                });
-              } catch (err) {
-                console.error('Ошибка загрузки записей:', err);
-              }
-            }
-
-            async function deleteAppointment(id) {
-              if (!confirm(`Вы действительно хотите удалить запись #${id}?`)) return;
-
-              try {
-                const res = await fetch(`/api/v1/crm/appointments/${id}`, {
-                  method: 'DELETE',
-                  headers: { 'Authorization': `Bearer ${jwtToken}` }
-                });
-
-                if (res.ok) {
-                  loadAppointments();
-                } else {
-                  alert('Не удалось удалить запись');
-                }
-              } catch (err) {
-                console.error('Ошибка удаления:', err);
-              }
-            }
-
-            function logout() {
-              jwtToken = null;
-              currentUser = null;
-              localStorage.removeItem('token');
-              localStorage.removeItem('user');
-              document.getElementById('loginCard').style.display = 'block';
-              document.getElementById('dashboardCard').style.display = 'none';
+              document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+              event.target.classList.add('active');
             }
     </script>
 </body>
