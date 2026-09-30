@@ -144,11 +144,10 @@ initDb();
 // ==========================================
 
 // Проверка статуса сервера
+const path = require('path');
+
 app.get('/', (req, res) => {
-    res.json({
-        status: 'online',
-        message: 'Бэкенд системы онлайн-записи салона красоты успешно работает!'
-    });
+    res.sendFile(path.join(__dirname, 'glow_co_salon_platform.html'));
 });
 
 // Получить список услуг
