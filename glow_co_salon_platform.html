@@ -195,6 +195,24 @@
             font-size: 0.85rem;
         }
 
+        .switch-auth {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+            .switch-auth a {
+                color: var(--primary);
+                font-weight: 700;
+                text-decoration: none;
+                cursor: pointer;
+            }
+
+                .switch-auth a:hover {
+                    text-decoration: underline;
+                }
+
         /* Модальное окно */
         .modal-overlay {
             position: fixed;
@@ -317,32 +335,69 @@
     </header>
 
     <main>
-        <!-- 1. СТРАНИЦА АВТОРИЗАЦИИ -->
+        <!-- 1. СТРАНИЦА АВТОРИЗАЦИИ И РЕГИСТРАЦИИ -->
         <div id="loginView" class="view-section active">
             <div class="card" style="max-width: 440px; margin: 0 auto;">
-                <h1 class="card-title">Вход в систему</h1>
-                <p class="card-subtitle">Введите учетные данные для доступа</p>
 
-                <div id="loginAlert" class="alert alert-error"></div>
+                <!-- Форма входа -->
+                <div id="loginFormContainer">
+                    <h1 class="card-title">Вход в систему</h1>
+                    <p class="card-subtitle">Введите учетные данные для доступа</p>
 
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>Логин</label>
-                        <input type="text" id="username" placeholder="user, user129, master1 или admin" required>
+                    <div id="loginAlert" class="alert alert-error"></div>
+
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label>Логин</label>
+                            <input type="text" id="username" placeholder="user, user129, master1 или admin" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn">Войти в кабинет</button>
+                    </form>
+
+                    <div class="switch-auth">
+                        Нет аккаунта? <a onclick="toggleAuthMode('register')">Зарегистрироваться</a>
                     </div>
-                    <div class="form-group">
-                        <label>Пароль</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
-                    </div>
-                    <button type="submit" class="btn">Войти в кабинет</button>
-                </form>
 
-                <div class="quick-roles">
-                    <button type="button" class="btn btn-secondary" onclick="quickLogin('user')">👤 Клиент (user)</button>
-                    <button type="button" class="btn btn-secondary" onclick="quickLogin('user129')">👤 Клиент (129)</button>
-                    <button type="button" class="btn btn-secondary" onclick="quickLogin('master')">✂ Мастер</button>
-                    <button type="button" class="btn btn-secondary" onclick="quickLogin('admin')">👑 Админ</button>
+                    <div class="quick-roles">
+                        <button type="button" class="btn btn-secondary" onclick="quickLogin('user')">👤 Клиент (user)</button>
+                        <button type="button" class="btn btn-secondary" onclick="quickLogin('user129')">👤 Клиент (129)</button>
+                        <button type="button" class="btn btn-secondary" onclick="quickLogin('master')">✂ Мастер</button>
+                        <button type="button" class="btn btn-secondary" onclick="quickLogin('admin')">👑 Админ</button>
+                    </div>
                 </div>
+
+                <!-- Форма регистрации -->
+                <div id="registerFormContainer" style="display: none;">
+                    <h1 class="card-title">Регистрация аккаунта</h1>
+                    <p class="card-subtitle">Создайте профиль клиента салона</p>
+
+                    <div id="registerAlert" class="alert alert-error"></div>
+
+                    <form id="registerForm" onsubmit="handleRegister(event)">
+                        <div class="form-group">
+                            <label>Ваше Имя</label>
+                            <input type="text" id="regName" placeholder="Анна" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Логин</label>
+                            <input type="text" id="regUsername" placeholder="Придумайте логин" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Пароль</label>
+                            <input type="password" id="regPassword" placeholder="••••••••" required>
+                        </div>
+                        <button type="submit" class="btn">Зарегистрироваться</button>
+                    </form>
+
+                    <div class="switch-auth">
+                        Уже есть аккаунт? <a onclick="toggleAuthMode('login')">Войти</a>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -524,6 +579,18 @@
                     document.getElementById(viewId).classList.add('active');
                 }
 
+                function toggleAuthMode(mode) {
+                    const loginCont = document.getElementById('loginFormContainer');
+                    const regCont = document.getElementById('registerFormContainer');
+                    if (mode === 'register') {
+                        loginCont.style.display = 'none';
+                        regCont.style.display = 'block';
+                    } else {
+                        regCont.style.display = 'none';
+                        loginCont.style.display = 'block';
+                    }
+                }
+
                 async function handleLogin(event) {
                     event.preventDefault();
                     const username = document.getElementById('username').value;
@@ -547,6 +614,38 @@
                             routeToRoleView(currentUser.role);
                         } else {
                             alert.textContent = data.error || 'Неверный логин или пароль';
+                            alert.style.display = 'block';
+                        }
+                    } catch (err) {
+                        alert.textContent = 'Ошибка связи с сервером';
+                        alert.style.display = 'block';
+                    }
+                }
+
+                async function handleRegister(event) {
+                    event.preventDefault();
+                    const name = document.getElementById('regName').value;
+                    const username = document.getElementById('regUsername').value;
+                    const password = document.getElementById('regPassword').value;
+                    const alert = document.getElementById('registerAlert');
+
+                    try {
+                        const res = await fetch('/api/v1/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, username, password })
+                        });
+
+                        const data = await res.json();
+
+                        if (res.ok) {
+                            jwtToken = data.token;
+                            currentUser = data.user;
+                            localStorage.setItem('token', jwtToken);
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            routeToRoleView(currentUser.role);
+                        } else {
+                            alert.textContent = data.error || 'Ошибка регистрации';
                             alert.style.display = 'block';
                         }
                     } catch (err) {

@@ -9,9 +9,9 @@ const JWT_SECRET = 'glow_co_super_secret_key_2026';
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static('public')); // Если фронтенд лежит в папке public
+app.use(express.static('public'));
 
-// База данных пользователей (в памяти для примера)
+// База данных пользователей (в памяти)
 const users = [
     { id: 1, username: 'admin', password: 'admin123', role: 'admin', name: 'Главный Администратор' },
     { id: 2, username: 'master1', password: 'master123', role: 'master', name: 'Елена Ростова' },
@@ -25,7 +25,6 @@ let appointments = [
     { id: 2, clientId: 4, client_name: 'Пользователь 129', client_phone: '+375 (29) 987-65-43', service_name: 'Маникюр с покрытием', master_name: 'Анна Смирнова', booking_date: '2026-10-06', booking_time: '13:00', status: 'arrived' }
 ];
 
-// Middleware для проверки JWT токена
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -39,7 +38,44 @@ function authenticateToken(req, res, next) {
     });
 }
 
-// 1. Эндпоинт авторизации (Логин)
+// 1. Регистрация нового клиента
+app.post('/api/v1/auth/register', (req, res) => {
+    const { name, username, password } = req.body;
+
+    if (!name || !username || !password) {
+        return res.status(400).json({ error: 'Заполните все поля для регистрации' });
+    }
+
+    const existingUser = users.find(u => u.username === username);
+    if (existingUser) {
+        return res.status(400).json({ error: 'Пользователь с таким логином уже существует' });
+    }
+
+    const newUser = {
+        id: users.length > 0 ? users[users.length - 1].id + 1 : 1,
+        username,
+        password,
+        role: 'client', // Все регистрирующиеся через сайт получают роль клиента
+        name
+    };
+
+    users.push(newUser);
+
+    const tokenPayload = { id: newUser.id, username: newUser.username, role: newUser.role, name: newUser.name };
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '8h' });
+
+    res.status(201).json({
+        token,
+        user: {
+            id: newUser.id,
+            username: newUser.username,
+            role: newUser.role,
+            name: newUser.name
+        }
+    });
+});
+
+// 2. Логин
 app.post('/api/v1/auth/login', (req, res) => {
     const { username, password } = req.body;
     const user = users.find(u => u.username === username && u.password === password);
@@ -48,7 +84,6 @@ app.post('/api/v1/auth/login', (req, res) => {
         return res.status(400).json({ error: 'Неверный логин или пароль' });
     }
 
-    // Создаем JWT токен с информацией о пользователе
     const tokenPayload = { id: user.id, username: user.username, role: user.role, name: user.name };
     const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '8h' });
 
@@ -63,19 +98,17 @@ app.post('/api/v1/auth/login', (req, res) => {
     });
 });
 
-// 2. Получение записей (с разделением прав доступа)
+// 3. Получение записей
 app.get('/api/v1/crm/appointments', authenticateToken, (req, res) => {
     if (req.user.role === 'admin' || req.user.role === 'master') {
-        // Админ и мастер видят все записи салона (или мастер может фильтровать по своему имени, если требуется)
         return res.json(appointments);
     } else {
-        // Обычный клиент видит только свои записи
         const clientAppointments = appointments.filter(app => app.clientId === req.user.id);
         return res.json(clientAppointments);
     }
 });
 
-// 3. Создание новой записи (клиентом)
+// 4. Создание записи
 app.post('/api/v1/crm/appointments', authenticateToken, (req, res) => {
     if (req.user.role !== 'client') {
         return res.status(403).json({ error: 'Только клиенты могут создавать новые записи' });
@@ -91,19 +124,19 @@ app.post('/api/v1/crm/appointments', authenticateToken, (req, res) => {
         id: appointments.length > 0 ? appointments[appointments.length - 1].id + 1 : 1,
         clientId: req.user.id,
         client_name: req.user.name || req.user.username,
-        client_phone: '+375 (29) 000-00-00', // Дефолтный телефон для примера
+        client_phone: '+375 (29) 000-00-00',
         service_name,
         master_name,
         booking_date,
         booking_time,
-        status: 'confirmed' // Статус по умолчанию при создании
+        status: 'confirmed'
     };
 
     appointments.push(newAppointment);
     res.status(201).json(newAppointment);
 });
 
-// 4. Изменение статуса записи (для мастеров и администраторов)
+// 5. Изменение статуса записи
 app.patch('/api/v1/crm/appointments/:id/status', authenticateToken, (req, res) => {
     if (req.user.role !== 'admin' && req.user.role !== 'master') {
         return res.status(403).json({ error: 'Недостаточно прав для изменения статуса' });
@@ -126,7 +159,7 @@ app.patch('/api/v1/crm/appointments/:id/status', authenticateToken, (req, res) =
     res.json({ message: 'Статус успешно обновлен', appointment });
 });
 
-// 5. Удаление / отмена записи
+// 6. Удаление записи
 app.delete('/api/v1/crm/appointments/:id', authenticateToken, (req, res) => {
     const appointmentId = parseInt(req.params.id);
     const index = appointments.findIndex(app => app.id === appointmentId);
@@ -135,7 +168,6 @@ app.delete('/api/v1/crm/appointments/:id', authenticateToken, (req, res) => {
         return res.status(404).json({ error: 'Запись не найдена' });
     }
 
-    // Клиент может удалять только свои записи, админ — любые
     if (req.user.role === 'client' && appointments[index].clientId !== req.user.id) {
         return res.status(403).json({ error: 'Нет прав на удаление чужой записи' });
     }
@@ -144,7 +176,6 @@ app.delete('/api/v1/crm/appointments/:id', authenticateToken, (req, res) => {
     res.json({ message: 'Запись успешно удалена' });
 });
 
-// Запуск сервера
 app.listen(PORT, () => {
     console.log(`Сервер Glow & Co. запущен на http://localhost:${PORT}`);
 });
