@@ -3,6 +3,7 @@ const cors = require('cors');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,9 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_key_glow_co';
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// Отдача статических файлов из текущей директории
+app.use(express.static(__dirname));
 
 // Подключение к базе данных PostgreSQL (Render PostgreSQL / DATABASE_URL)
 const pool = new Pool({
@@ -140,15 +144,17 @@ async function initDb() {
 initDb();
 
 // ==========================================
-// ПУБЛИЧНЫЕ МАРШРУТЫ (ДЛЯ КЛИЕНТСКОГО ВИДЖЕТА)
+// ГЛАВНАЯ СТРАНИЦА (ФРОНТЕНД ИНТЕРФЕЙС)
 // ==========================================
 
-// Проверка статуса сервера
-const path = require('path');
-
+// Отдача файла HTML по правому коренному адресу
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'glow_co_salon_platform.html'));
 });
+
+// ==========================================
+// ПУБЛИЧНЫЕ МАРШРУТЫ (ДЛЯ КЛИЕНТСКОГО ВИДЖЕТА)
+// ==========================================
 
 // Получить список услуг
 app.get('/api/v1/services', async (req, res) => {
@@ -181,7 +187,6 @@ app.get('/api/v1/available-slots', async (req, res) => {
     const allSlots = ['10:00', '11:30', '13:00', '14:30', '16:00', '17:30', '19:00'];
 
     try {
-        // Получаем уже занятые слоты на эту дату у выбранного мастера
         const busySlotsResult = await pool.query(
             'SELECT booking_time FROM bookings WHERE booking_date = $1 AND master_id = $2 AND status != $3',
             [date, master_id, 'cancelled']
@@ -209,7 +214,6 @@ app.post('/api/v1/bookings', async (req, res) => {
     }
 
     try {
-        // Проверка занятости слота
         const checkSlot = await pool.query(
             'SELECT id FROM bookings WHERE booking_date = $1 AND master_id = $2 AND booking_time = $3 AND status != $4',
             [date, master_id, slot_time, 'cancelled']
