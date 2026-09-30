@@ -13,7 +13,6 @@
             --card-bg: #ffffff;
             --primary: #8b5cf6;
             --primary-light: #f3e8ff;
-            --primary-hover: #7c3aed;
             --text-main: #1e1e24;
             --text-muted: #6b7280;
             --border-color: #e5e7eb;
@@ -226,7 +225,7 @@
             position: relative;
         }
 
-        /* BOOKING EVENT CARDS INSIDE CALENDAR */
+        /* BOOKING EVENT CARDS */
         .booking-card {
             position: absolute;
             left: 4px;
@@ -448,7 +447,9 @@
     <script>
             function switchTab(tabId, event) {
               document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-              event.target.classList.add('active');
+              if (event) {
+                event.target.classList.add('active');
+              }
             }
     </script>
 </body>
